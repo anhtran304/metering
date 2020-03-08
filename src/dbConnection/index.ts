@@ -32,7 +32,7 @@ export const pool = new sql.ConnectionPool(config);
 export const poolConnect = pool
   .connect()
   .then(pool => {
-    console.log('Connection established to DB server');
+    console.log('Connection to DB server has been established!');
     return pool;
   })
   .catch(err => console.log('Connection to DB server failed: ', err));

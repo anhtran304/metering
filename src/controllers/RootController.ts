@@ -41,12 +41,11 @@ class RootController {
 
   @get('/db')
   async testConnection(req: Request, res: Response) {
-    // await poolConnect; // ensures that the pool has been created
     try {
       const request = pool.request(); // create request from pool
-      const result = await request.query('select 1 as number');
-      console.dir(result);
-      return result;
+      const result = await request.query('select * from users');
+      console.log(result);
+      res.send(result);
     } catch (err) {
       console.error('SQL statement error: ', err);
       res.send('Sorry our DB is down');

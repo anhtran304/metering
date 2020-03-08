@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 let path = `${__dirname}/../../.env`;
-
 dotenv.config({ path: path });
 
 export const SESSION_KEY = process.env.SESSION_KEY || undefined;
