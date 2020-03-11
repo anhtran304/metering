@@ -1,17 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { get, controller, use } from './decorators';
 import { pool } from '../dbConnection';
 import { NODE_ENV } from '../env';
-
-function requireAuth(req: Request, res: Response, next: NextFunction): void {
-  if (req.session && req.session.loggedIn) {
-    next();
-    return;
-  } else {
-    res.status(403);
-    res.send('Not permitted');
-  }
-}
+import { requireAuth, logger } from './utils';
 
 @controller('')
 class RootController {
@@ -40,13 +31,13 @@ class RootController {
     res.send('Welcome to protected route, logged in user');
   }
 
+  // TESTING CONNECTION TO DB
   @get('/db')
   async testConnection(req: Request, res: Response) {
     try {
       const request = pool.request(); // create request from pool
       const result = await request.query('select * from users');
-      NODE_ENV === 'develop' &&
-        console.log(`GET | url: /db | by: | at: ${Date()}`);
+      logger(NODE_ENV, req);
       res.send(result.recordsets);
     } catch (err) {
       console.error('SQL statement error: ', err);

@@ -1,5 +1,10 @@
 import * as dotenv from 'dotenv';
 
+export enum ENV_VARIABLE {
+  develop = 'develop',
+  production = 'production'
+}
+
 dotenv.config();
 let path = `${__dirname}/../../.env`;
 dotenv.config({ path: path });
