@@ -3,9 +3,10 @@ import { Dispatch } from 'redux';
 import { ActionTypes } from './types';
 
 export interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
+  user_id: number;
+  first_name: string;
+  last_name: string;
+  date_time_created: Date;
 }
 
 export interface FetchTodosAction {
@@ -18,12 +19,11 @@ export interface DeleteTodoAction {
   payload: number;
 }
 
-const url = 'https://jsonplaceholder.typicode.com/todos';
+const url = 'http://localhost:3001/db';
 
 export const fetchTodos = (): Function => {
   return async (dispatch: Dispatch) => {
     const response = await axios.get<Todo[]>(url);
-
     dispatch<FetchTodosAction>({
       type: ActionTypes.fetchTodos,
       payload: response.data

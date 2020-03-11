@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 
 export enum ENV_VARIABLE {
-  develop = 'develop',
+  development = 'development',
   production = 'production'
 }
 

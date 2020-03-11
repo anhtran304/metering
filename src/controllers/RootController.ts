@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { get, controller, use } from './decorators';
 import { pool } from '../dbConnection';
 import { NODE_ENV, ENV_VARIABLE } from '../env';
-import { requireAuth, logToConsole } from './utils';
+import { requireAuth, logToConsole, cors } from './utils';
 
 @controller('')
 class RootController {
@@ -33,12 +33,14 @@ class RootController {
 
   // TESTING CONNECTION TO DB
   @get('/db')
+  @use(cors)
   async testConnection(req: Request, res: Response) {
     try {
       const request = pool.request(); // create request from pool
       const result = await request.query('select * from users');
-      NODE_ENV === ENV_VARIABLE.develop && logToConsole(req);
-      res.send(result.recordsets);
+      NODE_ENV === ENV_VARIABLE.development && logToConsole(req);
+      // result.recordsets[0] is aray of users
+      res.send(result.recordsets[0]);
     } catch (err) {
       console.error('SQL statement error: ', err);
       res.send('Sorry our DB is down');
