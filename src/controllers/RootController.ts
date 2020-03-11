@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { get, controller, use } from './decorators';
 import { pool } from '../dbConnection';
-import { NODE_ENV } from '../env';
-import { requireAuth, logger } from './utils';
+import { NODE_ENV, ENV_VARIABLE } from '../env';
+import { requireAuth, logToConsole } from './utils';
 
 @controller('')
 class RootController {
@@ -37,7 +37,7 @@ class RootController {
     try {
       const request = pool.request(); // create request from pool
       const result = await request.query('select * from users');
-      logger(NODE_ENV, req);
+      NODE_ENV === ENV_VARIABLE.develop && logToConsole(req);
       res.send(result.recordsets);
     } catch (err) {
       console.error('SQL statement error: ', err);
