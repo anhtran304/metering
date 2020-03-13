@@ -12,5 +12,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 SESSION_KEY && app.use(cookieSession({ keys: [SESSION_KEY] }));
 app.use(AppRouter.getInstance());
 app.listen(3001, () => {
-  console.log('Listening on port 3001');
+  console.log('Back end is listening on port 3001');
 });
