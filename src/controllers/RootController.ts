@@ -32,12 +32,15 @@ class RootController {
   }
 
   // TESTING CONNECTION TO DB
-  @get('/db')
+  @get('/api/db')
   @use(cors)
   async testConnection(req: Request, res: Response) {
     try {
       const request = pool.request(); // create request from pool
-      const result = await request.query('select * from users');
+      const result = await request.query(
+        'select UserId, FirstName, LastName, DateTimeCreated from Users'
+      );
+
       NODE_ENV === ENV_VARIABLE.development && logToConsole(req);
       // result.recordsets[0] is aray of users
       res.send(result.recordsets[0]);
