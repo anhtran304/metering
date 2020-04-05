@@ -172,19 +172,22 @@ const SignIn = props => {
   const handleSignIn = event => {
     event.preventDefault();
     // history.push('/');
-    axios.get('/db')
-          .then(function (response) {
-            // handle success
-            console.log(response);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .then(function () {
-            // always executed
-          });
-    
+    axios({
+      method: 'post',    
+      url: '/auth/login',
+      // headers: {'Authorization': 'Bearer' + token}, 
+      data: {
+        email: formState.values.email, 
+        password: formState.values.password
+      }
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+        
   };
 
   const hasError = field =>

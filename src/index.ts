@@ -8,6 +8,7 @@ import { SESSION_KEY } from './env';
 
 const app = express();
 
+app.use(bodyParser.json()) 
 app.use(bodyParser.urlencoded({ extended: true }));
 SESSION_KEY && app.use(cookieSession({ keys: [SESSION_KEY] }));
 app.use(AppRouter.getInstance());
