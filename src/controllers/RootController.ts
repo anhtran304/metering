@@ -8,7 +8,8 @@ import { requireAuth, logToConsole } from './utils';
 class RootController {
   @get('/')
   getRoot(req: Request, res: Response): void {
-    if (req.session && req.session.loggedIn) {
+    if (req.session && req.session.userEmail) {
+      console.log(req.session);
       res.send(`
       <div>
         <div>You are logged in</div>
