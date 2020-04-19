@@ -3,7 +3,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Badge,
+  Hidden,
+  IconButton,
+  Typography
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
@@ -20,6 +27,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const logoColor = { 
+  color: '#fff'
+}
+
 const Topbar = props => {
   const { className, onSidebarOpen, ...rest } = props;
 
@@ -34,10 +45,10 @@ const Topbar = props => {
     >
       <Toolbar>
         <RouterLink to="/">
-          <img
-            alt="Logo"
-            src="/images/logos/logo--white.svg"
-          />
+        < Typography variant = "h4"
+        style = { logoColor }>
+          Mondo Energy
+        </Typography>
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden mdDown>

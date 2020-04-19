@@ -121,6 +121,10 @@ const useStyles = makeStyles(theme => ({
   },
   signInButton: {
     margin: theme.spacing(2, 0)
+  }, 
+  errorColor: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.error.main
   }
 }));
 
@@ -133,7 +137,8 @@ const SignIn = props => {
     isValid: false,
     values: {},
     touched: {},
-    errors: {}
+    errors: {}, 
+    errorText: ''
   });
 
   useEffect(() => {
@@ -171,8 +176,7 @@ const SignIn = props => {
 
   const handleSignIn = event => {
     event.preventDefault();
-    // history.push('/');
-    axios({
+    const response = axios({
       method: 'post',    
       url: '/auth/login',
       // headers: {'Authorization': 'Bearer' + token}, 
@@ -181,13 +185,47 @@ const SignIn = props => {
         password: formState.values.password
       }
     })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
+    .catch(function () {
+      setFormState(formState => ({
+        ...formState,
+        errorText: "Sorry, could not make request to server. Please try again later." 
+      }));
     });
-        
+
+    response.then(res => {
+      let errorDisplayText = '';
+      if (res && res.status) {
+        if (res.status === 200 && res.data) {
+          switch (res.data.status) {
+            case 200:
+              errorDisplayText = '';
+              break;
+            default:
+              errorDisplayText = res.data.message
+              break;
+          }
+        } else {
+          // Catch the error of response from server but status is not 200
+          errorDisplayText = "Sorry, server is not response with correct status. Please try again later.";
+        }
+      } else {
+        // Catch the error of no response from server
+        errorDisplayText = "Sorry, no response from server. Please try again later."
+      }
+      if (errorDisplayText.length > 0) {
+        setFormState(formState => ({
+          ...formState,
+          errorText: errorDisplayText
+        }));
+      } else {
+        localStorage.setItem('email', formState.values.email);
+        localStorage.setItem('fullName', res.data.data.fullName);
+        localStorage.setItem('avatarURL', res.data.data.avatarURL);
+        localStorage.setItem('operations', res.data.data.operations);
+        history.push('/');
+      }
+    });
+
   };
 
   const hasError = field =>
@@ -287,6 +325,11 @@ const SignIn = props => {
                   value={formState.values.password || ''}
                   variant="outlined"
                 />
+                <Typography
+                  className = { classes.errorColor}
+                >
+                  { formState.errorText }
+                </Typography>
                 <Button
                   onClick={handleSignIn}
                   className={classes.signInButton}

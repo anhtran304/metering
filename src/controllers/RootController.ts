@@ -6,9 +6,11 @@ import { requireAuth, logToConsole } from './utils';
 
 @controller('')
 class RootController {
-  @get('/')
+  @get('/api')
   getRoot(req: Request, res: Response): void {
     if (req.session && req.session.userEmail) {
+      console.log(('In here'));
+      
       console.log(req.session);
       res.send(`
       <div>

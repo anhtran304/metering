@@ -23,40 +23,12 @@ interface IUser {
   DateTimeCreated: Date;
   isAtive: Number;
 }
-interface IUserRole {
-  RoleName: Number;
-}
 
 @controller('/api/auth')
 class LoginController {
-  @get('/login')
-  getLogin(req: Request, res: Response): void {
-    res.send(`
-    <form method="POST">
-        <div>
-            <label>Email</label>
-            <input name="email"/>
-        </div>
-        <div>
-            <label>Password</label>
-            <input name="password" type="password"/>
-        </div>
-        <button>Submit</button>
-    </form>
-    `);
-  }
-
   @post('/login')
   @bodyValidator('email', 'password')
   async postLogin(req: Request, res: Response) {
-    // const { email, password } = req.body;
-    // if (email === 'hi@hi.com' && password === 'pwd') {
-    //   req.session = { loggedIn: true };
-    //   res.redirect('/');
-    // } else {
-    //   res.send('Invalid email or password');
-    // }
-
     let responseData: IResData = {
       status: 200,
       data: '',
@@ -66,7 +38,7 @@ class LoginController {
     try {
       NODE_ENV === ENV_VARIABLE.development && logToConsole(req);
       const requestDB = pool.request(); // create request from pool
-      // Query user from database
+      // Query user from database with email address
       const resultUser = await requestDB
         .input('iEmail', sql.NVarChar(50), email)
         .input('iIsAtive', sql.Bit, 1)
@@ -81,24 +53,36 @@ class LoginController {
           responseData.message = 'Password is not correct';
           res.status(200).send(responseData);
         } else {
-          // Query to get all operation by email
-          let operation = await pool
+          // Query to get all operation belong to user email
+          let operations = await pool
             .request()
             .input('pEmail', sql.NVarChar(50), user.Email)
             .execute('getOperationsByEmail')
-            .then((result) => result.recordset)
             .catch((err) => {
               responseData.status = 400;
               responseData.message = err;
               res.status(200).send(responseData);
             });
-          if (operation && operation.length > 0) {
-            req.session = { userEmail: user.Email, operation: operation };                        
-          } else {
+          if (operations && operations.recordset.length > 0) {
+            // If users has some oprations assigned to them, then redirect to dashboard and assign session
+            req.session = {
+              userEmail: user.Email,
+              operations: operations.recordset,
+            };
             responseData.status = 200;
-            responseData.message = 'User is not assigned to any operation';
+            responseData.data.operations = operations.recordset;
+            responseData.data.email = user.Email;
+            responseData.data.fullName = user.FullName;
+            responseData.data.avatarURL = user.AvatarURL;
+            responseData.message = `Successful find operation assigned to ${email}`;
             res.status(200).send(responseData);
-          }
+          } else {
+            // If users has NO oprations assigned to them, then redirect to dashboard and show empty dashboad
+              responseData.status = 404;
+              responseData.message =
+                'User is not assigned to any operation';
+              res.status(200).send(responseData);
+            }
         }
       } else {
         responseData.status = 404;
