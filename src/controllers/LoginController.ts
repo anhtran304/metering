@@ -31,7 +31,7 @@ class LoginController {
   async postLogin(req: Request, res: Response) {
     let responseData: IResData = {
       status: 200,
-      data: '',
+      data: {},
       message: '',
     };
     const { email, password } = req.body;
