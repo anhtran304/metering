@@ -218,10 +218,11 @@ const SignIn = props => {
           errorText: errorDisplayText
         }));
       } else {
+        localStorage.clear();
         localStorage.setItem('email', formState.values.email);
         localStorage.setItem('fullName', res.data.data.fullName);
         localStorage.setItem('avatarURL', res.data.data.avatarURL);
-        localStorage.setItem('operations', res.data.data.operations);
+        localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
         history.push('/');
       }
     });
@@ -248,21 +249,26 @@ const SignIn = props => {
                 className={classes.quoteText}
                 variant="h1"
               >
-                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
-                they sold out High Life.
+                EMGDS
+              </Typography>
+              <Typography
+                className={classes.quoteText}
+                variant="h1"
+              >
+                Data management system
+              </Typography>
+              <Typography
+                className={classes.quoteText}
+                variant="h1"
+              >
+                Metering Department
               </Typography>
               <div className={classes.person}>
                 <Typography
                   className={classes.name}
                   variant="body1"
                 >
-                  Takamaru Ayako
-                </Typography>
-                <Typography
-                  className={classes.bio}
-                  variant="body2"
-                >
-                  Manager at inVision
+                  Ausnet Group
                 </Typography>
               </div>
             </div>

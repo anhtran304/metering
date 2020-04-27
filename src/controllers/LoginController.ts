@@ -67,10 +67,10 @@ class LoginController {
             // If users has some oprations assigned to them, then redirect to dashboard and assign session
             req.session = {
               userEmail: user.Email,
-              operations: operations.recordset,
+              operationNames: operations.recordset.map(operation => operation.OperationName),
             };
             responseData.status = 200;
-            responseData.data.operations = operations.recordset;
+            responseData.data.operationNames = operations.recordset.map(operation => operation.OperationName);
             responseData.data.email = user.Email;
             responseData.data.fullName = user.FullName;
             responseData.data.avatarURL = user.AvatarURL;
@@ -78,7 +78,7 @@ class LoginController {
             res.status(200).send(responseData);
           } else {
             // If users has NO oprations assigned to them, then redirect to dashboard and show empty dashboad
-              responseData.status = 404;
+              responseData.status = 200;
               responseData.message =
                 'User is not assigned to any operation';
               res.status(200).send(responseData);
