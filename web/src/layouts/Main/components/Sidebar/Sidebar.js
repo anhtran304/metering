@@ -48,22 +48,20 @@ const Sidebar = props => {
     {
       title: 'Dashboard',
       href: '/dashboard',
-      operationName: 'GET_DASHBOARD',
-      isForAllUser: true,
+      isPublic: true,
       icon: <DashboardIcon />
     },
     {
       title: 'View All Stations',
       href: '/stations',
+      isPublic: false,
       operationName: 'GET_ALL_STATIONS',
-      isForAllUser: false,
       icon: <ShoppingBasketIcon />
     },
     {
       title: 'Authentication',
       href: '/sign-in',
-      operationName: 'GET_AUTHENTICATION',
-      isForAllUser: true,
+      isPublic: true,
       icon: <LockOpenIcon />
     }
     // {
@@ -101,7 +99,7 @@ const Sidebar = props => {
   let pages = [];
 
   if (operationNames) {
-    pages = allPages.filter(page => page.isForAllUser === true || operationNames.includes(page.operationName));
+    pages = allPages.filter(page => page.isPublic === true || operationNames.includes(page.operationName));
   }
 
   return (

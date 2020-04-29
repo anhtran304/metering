@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 
-import { RouteWithLayout } from './components';
+import { PublicRouter, PrivateRouter } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
@@ -26,16 +26,18 @@ const Routes = () => {
         from="/"
         to="/dashboard"
       />
-      <RouteWithLayout
+      <PrivateRouter
         component={DashboardView}
         exact
         layout={MainLayout}
+        isDashboard = 'true'
         path="/dashboard"
       />
-      <RouteWithLayout
+      <PrivateRouter
         component={StationListView}
         exact
         layout={MainLayout}
+        operationName = 'GET_ALL_STATIONS'
         path = "/stations"
       />
       {/* <RouteWithLayout
@@ -74,19 +76,19 @@ const Routes = () => {
         layout={MainLayout}
         path="/settings"
       /> */}
-      <RouteWithLayout
+      <PublicRouter
         component={SignUpView}
         exact
         layout={MinimalLayout}
         path="/sign-up"
       />
-      <RouteWithLayout
+      <PublicRouter
         component={SignInView}
         exact
         layout={MinimalLayout}
         path="/sign-in"
       />
-      <RouteWithLayout
+      <PublicRouter
         component={NotFoundView}
         exact
         layout={MinimalLayout}
