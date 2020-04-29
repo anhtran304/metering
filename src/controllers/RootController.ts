@@ -9,9 +9,8 @@ class RootController {
   @get('/api')
   getRoot(req: Request, res: Response): void {
     if (req.session && req.session.userEmail) {
-      console.log(('In here'));
-      
-      console.log(req.session);
+      console.log(req.session.userEmail);
+      console.log(req.session.operationNames);
       res.send(`
       <div>
         <div>You are logged in</div>

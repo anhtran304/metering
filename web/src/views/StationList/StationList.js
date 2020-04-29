@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
+import axios from 'axios';
 
 import {
   StationListComponent
@@ -14,6 +15,16 @@ const useStyles = makeStyles(theme => ({
 
 const StationList = () => {
   const classes = useStyles();
+
+  // const [data, setData] = useState({ hits: [] });
+ 
+  // // useEffect(async () => {
+  // //   const result = await axios(
+  // //     'https://hn.algolia.com/api/v1/search?query=redux',
+  // //   );
+ 
+  // //   setData(result.data);
+  // // });
 
   return (
     <div className={classes.root}>
