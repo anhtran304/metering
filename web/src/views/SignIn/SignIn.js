@@ -220,9 +220,9 @@ const SignIn = props => {
       } else {
         localStorage.clear();
         localStorage.setItem('email', formState.values.email);
-        localStorage.setItem('fullName', res.data.data.fullName);
-        localStorage.setItem('avatarURL', res.data.data.avatarURL);
-        localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
+        if (res.data.data.fullName) localStorage.setItem('fullName', res.data.data.fullName);
+        if (res.data.data.avatarURL) localStorage.setItem('avatarURL', res.data.data.avatarURL);
+        if (res.data.data.operationNames) localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
         history.push('/');
       }
     });
