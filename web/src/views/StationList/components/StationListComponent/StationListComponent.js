@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
+import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -54,6 +55,24 @@ const StationListComponent = props => {
   const classes = useStyles();
 
   const [orders] = useState(mockData);
+
+  const [data, setData] = useState({
+    stations: []
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios({
+        method: 'get',
+        url: '/stations',
+        // headers: {'Authorization': 'Bearer' + token}, 
+      });
+      console.log(result);
+      setData(result.data);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Card
