@@ -52,7 +52,7 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: 'View All Stations',
+      title: 'Stations',
       href: '/stations',
       isPublic: false,
       operationName: 'GET_ALL_STATIONS',
