@@ -12,12 +12,12 @@ if (DB_USER && DB_PASSWORD && DB_SERVER && DB_DATABASE) {
     pool: {
       max: 10,
       min: 0,
-      idleTimeoutMillis: 30000
+      idleTimeoutMillis: 30000,
     },
     options: {
       enableArithAbort: true,
-      encrypt: true
-    }
+      encrypt: true,
+    },
   };
 } else {
   console.log('DB configuration is not set up correct');

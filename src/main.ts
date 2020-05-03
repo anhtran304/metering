@@ -1,19 +1,29 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as session from 'express-session';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as passport from 'passport';
+import { join } from 'path';
+import { AppModule } from './app.module';
+
+import * as session from 'express-session';
 import flash = require('connect-flash');
+import * as exphbs from 'express-handlebars';
+import * as passport from 'passport';
+import { SESSION_SECRET } from './env';
+
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  const viewsPath = join(__dirname, '../public/views');
+  app.engine('.hbs', exphbs({ extname: '.hbs', defaultLayout: 'main' }));
+  app.set('views', viewsPath);
+  app.set('view engine', '.hbs');
+
   app.use(
     session({
-      secret: 'nest cats',
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-    })
+    }),
   );
 
   app.use(passport.initialize());
@@ -22,5 +32,4 @@ async function bootstrap() {
 
   await app.listen(3001);
 }
-
 bootstrap();

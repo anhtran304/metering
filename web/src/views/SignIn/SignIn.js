@@ -181,7 +181,7 @@ const SignIn = props => {
       url: '/auth/login',
       // headers: {'Authorization': 'Bearer' + token}, 
       data: {
-        email: formState.values.email, 
+        username: formState.values.email,
         password: formState.values.password
       }
     })
@@ -195,9 +195,9 @@ const SignIn = props => {
     response.then(res => {
       let errorDisplayText = '';
       if (res && res.status) {
-        if (res.status === 200 && res.data) {
+        if (res.status === 201 && res.data) {
           switch (res.data.status) {
-            case 200:
+            case 200:              
               errorDisplayText = '';
               break;
             default:
@@ -212,7 +212,7 @@ const SignIn = props => {
         // Catch the error of no response from server
         errorDisplayText = "Sorry, no response from server. Please try again later."
       }
-      if (errorDisplayText.length > 0) {
+      if (errorDisplayText && errorDisplayText.length > 0) {
         setFormState(formState => ({
           ...formState,
           errorText: errorDisplayText
@@ -220,9 +220,9 @@ const SignIn = props => {
       } else {
         localStorage.clear();
         localStorage.setItem('email', formState.values.email);
-        if (res.data.data.fullName) localStorage.setItem('fullName', res.data.data.fullName);
-        if (res.data.data.avatarURL) localStorage.setItem('avatarURL', res.data.data.avatarURL);
-        if (res.data.data.operationNames) localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
+        if (res.data.data && res.data.data.fullName) localStorage.setItem('fullName', res.data.data.fullName);
+        if (res.data.data && res.data.data.avatarURL) localStorage.setItem('avatarURL', res.data.data.avatarURL);
+        if (res.data.data && res.data.data.operationNames) localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
         history.push('/');
       }
     });
