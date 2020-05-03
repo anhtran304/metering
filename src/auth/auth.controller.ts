@@ -10,14 +10,8 @@ import {
 import { Response } from 'express';
 
 import { LoginGuard } from '../common/guards/login.guard';
-import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
+// import { AuthenticatedGuard } from '../common/guards/authenticated.guard';
 import { AuthExceptionFilter } from '../common/filters/auth-exceptions.filter';
-
-export interface IResData {
-  status: Number;
-  data: any;
-  message: String;
-}
 
 @Controller('/api/auth')
 @UseFilters(AuthExceptionFilter)
