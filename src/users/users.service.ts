@@ -1,38 +1,4 @@
-// import { Injectable } from '@nestjs/common';
-
-// @Injectable()
-// export class UsersService {
-//   private readonly users: any[];
-
-//   constructor() {
-//     this.users = [
-//       {
-//         userId: 1,
-//         username: 'john',
-//         password: 'changeme',
-//         pet: { name: 'alfred', picId: 1 },
-//       },
-//       {
-//         userId: 2,
-//         username: 'chris',
-//         password: 'secret',
-//         pet: { name: 'gopher', picId: 2 },
-//       },
-//       {
-//         userId: 3,
-//         username: 'maria',
-//         password: 'guess',
-//         pet: { name: 'jenny', picId: 3 },
-//       },
-//     ];
-//   }
-
-//   async findOne(username: string): Promise<any> {
-//     return this.users.find(user => user.username === username);
-//   }
-// }
-
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { pool } from '../dbConnection';
 import sql = require('mssql');
 import { UnauthorizedException } from '@nestjs/common';
@@ -52,21 +18,42 @@ export interface IUser {
 
 @Injectable()
 export class UsersService {
-  private users: IUser[];
+  private user: IUser;
+  private operations: string[];
   async findOne(email: string): Promise<any> {
     const requestDB = pool.request(); // create request from pool
     // Query user from database with email address
-    const data = await requestDB
+    const dataUser = await requestDB
       .input('iEmail', sql.NVarChar(50), email)
       .input('iIsAtive', sql.Bit, 1)
       .query(
-        'select * from Users where Email = @iEmail and isActive = @iIsAtive',
+        'select * from Users where Email = @iEmail and isActive = @iIsAtive'
       );
-    if (!data) {
-      throw new UnauthorizedException();
+    if (!dataUser.recordset) {
+      throw new BadRequestException();
+    } else if (dataUser.recordset.length === 0) {
+      throw new NotFoundException();
+    } else if (dataUser.recordset.length > 1) {
+      throw new ConflictException();
     } else {
-      this.users = data.recordset;     
-      return this.users.find(user => user.Email === email);
+      this.user = dataUser.recordset[0];
+      return this.user;
+    }
+  }
+  async findOperation(email: string): Promise<any> {
+    const dataOperation = await pool
+      .request()
+      .input('pEmail', sql.NVarChar(50), email)
+      .execute('getOperationsByEmail');
+    if (!dataOperation.recordset) {
+      throw new NotFoundException();
+    } else if (dataOperation.recordset.length === 0) {
+      return this.operations;
+    } else {
+      this.operations = dataOperation.recordset.map(
+        (operation) => operation.OperationName
+      );
+      return this.operations;
     }
   }
 }
