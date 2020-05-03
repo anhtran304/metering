@@ -62,6 +62,7 @@ const StationListComponent = props => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // const result = await fetch('/stations');
       const result = await axios({
         method: 'get',
         url: '/stations',
