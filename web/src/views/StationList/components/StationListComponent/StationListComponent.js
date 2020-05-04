@@ -20,9 +20,6 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import mockData from './data';
-import { StatusBullet } from 'components';
-
 const useStyles = makeStyles(theme => ({
   root: {},
   content: {
@@ -43,35 +40,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const statusColors = {
-  delivered: 'success',
-  pending: 'info',
-  refunded: 'danger'
-};
-
 const StationListComponent = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
 
-  const [orders] = useState(mockData);
-
-  const [data, setData] = useState({
-    stations: []
-  });
+  const [data, setData] = useState({ stations: [] });
 
   useEffect(() => {
     const fetchData = async () => {
-      // const result = await fetch('/stations');
       const result = await axios({
         method: 'get',
         url: '/stations',
-        // headers: {'Authorization': 'Bearer' + token}, 
       });
-      console.log(result);
+      console.log(result.data);
       setData(result.data);
     };
-
     fetchData();
   }, []);
 
@@ -104,30 +88,23 @@ const StationListComponent = props => {
                   <TableCell>Address</TableCell>
                   <TableCell>Inspection reports</TableCell>
                   <TableCell>Inspection date</TableCell>
-                  <TableCell>Station details</TableCell>
+                  <TableCell>Inspection Report Number</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map(order => (
+                {data.stations && data.stations.map(station => (
                   <TableRow
                     hover
-                    key={order.id}
+                    key={station.StationID}
                   >
-                    <TableCell>{order.ref}</TableCell>
-                    <TableCell>{order.customer.name}</TableCell>
+                    <TableCell>{station.StationName}</TableCell>
+                    <TableCell>{station.StationDiagram}</TableCell>
+                    <TableCell>{station.StationAddress}</TableCell>
+                    <TableCell>{station.InspectionReport}</TableCell>
                     <TableCell>
-                      {moment(order.createdAt).format('DD/MM/YYYY')}
+                      {moment(station.InspectionDate).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>
-                      <div className={classes.statusContainer}>
-                        <StatusBullet
-                          className={classes.status}
-                          color={statusColors[order.status]}
-                          size="sm"
-                        />
-                        {order.status}
-                      </div>
-                    </TableCell>
+                    <TableCell>{station.inspectionReportNumber}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
