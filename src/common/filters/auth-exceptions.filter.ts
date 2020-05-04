@@ -3,8 +3,10 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
   UnauthorizedException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -15,14 +17,30 @@ export class AuthExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    if (
-      exception instanceof UnauthorizedException ||
-      exception instanceof ForbiddenException
-    ) {
-      request.flash('loginError', 'Please try again!');
-      response.redirect('/');
+    if (exception instanceof NotFoundException || exception instanceof BadRequestException) {
+      response.status(201).json({
+        status: 404,
+        timestamp: new Date().toISOString(),
+        message: 'Can not find user',
+      });
+    } else if (exception instanceof ConflictException) {
+      response.status(201).json({
+        status: 400,
+        timestamp: new Date().toISOString(),
+        message: 'Two many user with the same email',
+      });
+    } else if (exception instanceof UnauthorizedException) {
+      response.status(201).json({
+        status: 400,
+        timestamp: new Date().toISOString(),
+        message: 'Email and password might not correct',
+      });
     } else {
-      response.redirect('/error');
+      response.status(201).json({
+        status: 403,
+        timestamp: new Date().toISOString(),
+        message: 'Error in station services',
+      });
     }
   }
 }

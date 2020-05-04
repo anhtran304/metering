@@ -20,6 +20,7 @@ export interface IUser {
 export class UsersService {
   private user: IUser;
   private operations: string[];
+  // Find one user by email
   async findOne(email: string): Promise<any> {
     const requestDB = pool.request(); // create request from pool
     // Query user from database with email address
@@ -40,7 +41,8 @@ export class UsersService {
       return this.user;
     }
   }
-  async findOperation(email: string): Promise<any> {
+  // Find operation assigned to user
+  async findOperations(email: string): Promise<any> {
     const dataOperation = await pool
       .request()
       .input('pEmail', sql.NVarChar(50), email)
