@@ -83,28 +83,31 @@ const StationListComponent = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Station name</TableCell>
-                  <TableCell>SLD</TableCell>
+                  <TableCell>Station Name</TableCell>
                   <TableCell>Address</TableCell>
-                  <TableCell>Inspection reports</TableCell>
-                  <TableCell>Inspection date</TableCell>
-                  <TableCell>Inspection Report Number</TableCell>
+                  {/* Link to open PDF */}
+                  <TableCell>SLD</TableCell>
+                  {/* Link to other page to list all inspection */}
+                  <TableCell>Inspection Reports</TableCell> 
+                  <TableCell>Inspection Date</TableCell>
+                  {/* Button -> link */}
+                  <TableCell>Station Detail</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.stations && data.stations.map(station => (
                   <TableRow
                     hover
-                    key={station.StationID}
+                    key={station.StationId}
                   >
                     <TableCell>{station.StationName}</TableCell>
-                    <TableCell>{station.StationDiagram}</TableCell>
                     <TableCell>{station.StationAddress}</TableCell>
+                    <TableCell>{station.StationDiagram}</TableCell>
                     <TableCell>{station.InspectionReport}</TableCell>
                     <TableCell>
                       {moment(station.InspectionDate).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>{station.inspectionReportNumber}</TableCell>
+                    <TableCell>View Detail</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

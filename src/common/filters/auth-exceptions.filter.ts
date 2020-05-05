@@ -39,7 +39,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
       response.status(201).json({
         status: 403,
         timestamp: new Date().toISOString(),
-        message: 'Error in station services',
+        message: 'Error in user services',
       });
     }
   }
