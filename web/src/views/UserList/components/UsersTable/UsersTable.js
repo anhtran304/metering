@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
-  Checkbox,
+  // Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -18,8 +18,6 @@ import {
   Typography,
   TablePagination
 } from '@material-ui/core';
-
-import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -42,47 +40,61 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
+
   const { className, users, ...rest } = props;
 
   const classes = useStyles();
 
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  // const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [data, setData] = useState({ users: [] });
 
-  const handleSelectAll = event => {
-    const { users } = props;
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios({
+        method: 'get',
+        url: '/users',
+      });
+      setData(result.data);
+    };
+    fetchData();
+  }, []);
 
-    let selectedUsers;
+  // const handleSelectAll = event => {
+  //   const { users } = props;
 
-    if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
-    } else {
-      selectedUsers = [];
-    }
+  //   let selectedUsers;
 
-    setSelectedUsers(selectedUsers);
-  };
+  //   if (event.target.checked) {
+  //     selectedUsers = users.map(user => user.id);
+  //   } else {
+  //     selectedUsers = [];
+  //   }
 
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
+  //   setSelectedUsers(selectedUsers);
+  // };
 
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
+  // const handleSelectOne = (event, id) => {
+  //   const selectedIndex = selectedUsers.indexOf(id);
+  //   let newSelectedUsers = [];
 
-    setSelectedUsers(newSelectedUsers);
-  };
+  //   if (selectedIndex === -1) {
+  //     newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
+  //   } else if (selectedIndex === 0) {
+  //     newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
+  //   } else if (selectedIndex === selectedUsers.length - 1) {
+  //     newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelectedUsers = newSelectedUsers.concat(
+  //       selectedUsers.slice(0, selectedIndex),
+  //       selectedUsers.slice(selectedIndex + 1)
+  //     );
+  //   }
+
+  //   setSelectedUsers(newSelectedUsers);
+  // };
 
   const handlePageChange = (event, page) => {
     setPage(page);
@@ -103,7 +115,7 @@ const UsersTable = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox">
+                  {/* <TableCell padding="checkbox">
                     <Checkbox
                       checked={selectedUsers.length === users.length}
                       color="primary"
@@ -113,50 +125,37 @@ const UsersTable = props => {
                       }
                       onChange={handleSelectAll}
                     />
-                  </TableCell>
-                  <TableCell>Name</TableCell>
+                  </TableCell> */}
+                  <TableCell>Full Name</TableCell>
                   <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
+                  < TableCell>Registration Date</TableCell>
+                  <TableCell>Active</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, rowsPerPage).map(user => (
+                {data.users.slice(0, rowsPerPage).map(user => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
-                    selected={selectedUsers.indexOf(user.id) !== -1}
+                    key={user.UserId}
+                    selected={selectedUsers.indexOf(user.UserId) !== -1}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedUsers.indexOf(user.id) !== -1}
                         color="primary"
                         onChange={event => handleSelectOne(event, user.id)}
                         value="true"
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
-                      <div className={classes.nameContainer}>
-                        <Avatar
-                          className={classes.avatar}
-                          src={user.avatarUrl}
-                        >
-                          {getInitials(user.name)}
-                        </Avatar>
-                        <Typography variant="body1">{user.name}</Typography>
-                      </div>
+                      <Typography variant="body1">{user.FullName}</Typography>
                     </TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.Email}</TableCell>
                     <TableCell>
-                      {user.address.city}, {user.address.state},{' '}
-                      {user.address.country}
+                      {moment(user.DateTimeCreated).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>{user.phone}</TableCell>
-                    <TableCell>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
-                    </TableCell>
+                    <TableCell>{user.isActive.toString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

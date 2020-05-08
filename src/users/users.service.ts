@@ -19,9 +19,11 @@ export interface IUser {
 @Injectable()
 export class UsersService {
   private user: IUser;
+  private users: IUser[] = [];
   private operations: string[];
+
   // Find one user by email
-  async findOne(email: string): Promise<any> {
+  async findOneByEmail(email: string): Promise<any> {
     const requestDB = pool.request(); // create request from pool
     // Query user from database with email address
     const dataUser = await requestDB
@@ -41,6 +43,22 @@ export class UsersService {
       return this.user;
     }
   }
+
+  // Find all users in db
+  async findAllUsers(): Promise<any> {
+    const requestDB = pool.request(); // create request from pool
+    // Query user from database with email address
+    const dataUser = await requestDB.query(
+      'select UserId, FullName, Email, DateTimeCreated, isActive from Users'
+    );
+    if (!dataUser.recordset) {
+      throw new BadRequestException();
+    } else {
+      this.users = dataUser.recordset;
+      return this.users;
+    }
+  }
+
   // Find operation assigned to user
   async findOperations(email: string): Promise<any> {
     const dataOperation = await pool

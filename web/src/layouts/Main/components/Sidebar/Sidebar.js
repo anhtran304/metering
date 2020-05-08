@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-// import PeopleIcon from '@material-ui/icons/People';
+import PeopleIcon from '@material-ui/icons/People';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 // import TextFieldsIcon from '@material-ui/icons/TextFields';
 // import ImageIcon from '@material-ui/icons/Image';
@@ -42,7 +42,7 @@ const Sidebar = props => {
 
   const classes = useStyles();
 
-  const operationNames = JSON.parse(localStorage.getItem('operationNames'));
+  const operationNames = JSON.parse(sessionStorage.getItem('operationNames'));
 
   const allPages = [
     {
@@ -59,16 +59,18 @@ const Sidebar = props => {
       icon: <ShoppingBasketIcon />
     },
     {
+      title: 'Users',
+      href: '/users',
+      isPublic: false,
+      operationName: 'GET_ALL_USERS',
+      icon: < PeopleIcon />
+    },
+    {
       title: 'Authentication',
       href: '/sign-in',
       isPublic: true,
       icon: <LockOpenIcon />
     }
-    // {
-    //   title: 'Users',
-    //   href: '/users',
-    //   icon: <PeopleIcon />
-    // },
     // {
     //   title: 'Products',
     //   href: '/products',
