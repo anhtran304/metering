@@ -129,6 +129,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
+
+  useEffect(() => {
+    const logOut = async () => {
+      await axios({
+        method: 'get',
+        url: '/auth/logout',
+      });
+    };
+    logOut();
+  }, []);
+
+  sessionStorage.clear();
   const { history } = props;
 
   const classes = useStyles();
@@ -218,11 +230,11 @@ const SignIn = props => {
           errorText: errorDisplayText
         }));
       } else {
-        localStorage.clear();
-        localStorage.setItem('email', formState.values.email);
-        if (res.data.data && res.data.data.fullName) localStorage.setItem('fullName', res.data.data.fullName);
-        if (res.data.data && res.data.data.avatarURL) localStorage.setItem('avatarURL', res.data.data.avatarURL);
-        if (res.data.data && res.data.data.operationNames) localStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
+        sessionStorage.clear();
+        sessionStorage.setItem('email', formState.values.email);
+        if (res.data.data && res.data.data.fullName) sessionStorage.setItem('fullName', res.data.data.fullName);
+        if (res.data.data && res.data.data.avatarURL) sessionStorage.setItem('avatarURL', res.data.data.avatarURL);
+        if (res.data.data && res.data.data.operationNames) sessionStorage.setItem('operationNames', JSON.stringify(res.data.data.operationNames));
         history.push('/');
       }
     });

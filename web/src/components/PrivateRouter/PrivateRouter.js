@@ -3,7 +3,7 @@ import { Route, Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const PrivateRouter = props => {
-  const operationNames = JSON.parse(localStorage.getItem('operationNames'));
+  const operationNames = JSON.parse(sessionStorage.getItem('operationNames'));
   const { layout: Layout, component: Component, ...rest } = props;
   if (!operationNames) {
     return (<Redirect to="/sign-in" />);
@@ -23,20 +23,6 @@ const PrivateRouter = props => {
       return (<Redirect to="/not-found" />);
     }
   }
-  // if (operationNames && (operationNames.includes(props.operationName) || props.isDashboard === 'true')) {
-  //   return (
-  //       <Route
-  //         {...rest}
-  //         render={matchProps => (
-  //           <Layout>
-  //             <Component {...matchProps} />
-  //           </Layout>
-  //         )}
-  //       />
-  //     );
-  // } else {
-  //   return (<Redirect to="/not-found" />);
-  // }
 };
 
 PrivateRouter.propTypes = {

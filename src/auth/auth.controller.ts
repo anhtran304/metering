@@ -31,4 +31,9 @@ export class AuthController {
       message: `Successful find user and operations`,
     });
   }
+  @Get('/logout')
+  logout(@Req() req, @Res() res: Response) {
+    req.logout();
+    res.status(200);
+  }
 }
