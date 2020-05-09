@@ -3,6 +3,7 @@ import { pool } from '../dbConnection';
 import sql = require('mssql');
 import { Body } from '@nestjs/common';
 import bcrypt = require('bcrypt');
+import { SALT_ROUNDS } from '../env'
 
 export interface IUser {
   // UserId: number;
@@ -64,7 +65,7 @@ export class UsersService {
   async addOneUser(@Body() body): Promise<any> {
     const user = body.values;
   
-    bcrypt.hash(user.password, 10, function(err, hash) {
+    bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
       console.log(body.values);
     });
     
