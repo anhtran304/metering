@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -32,30 +33,14 @@ const UserDetails = props => {
 
   const classes = useStyles();
 
-  // const [values, setValues] = useState({
-  //   firstName: '',
-  //   lastName: '',
-  //   email: '',
-  //   password: '',
-  //   isActive: '',
-  //   confirmPassword: ''
-  // });
-
-  // const handleChange = event => {
-  //   setValues({
-  //     ...values,
-  //     [event.target.name]: event.target.value
-  //   });
-  // };
-
   const isActive = [
     {
-      value: 'true',
-      label: 'yes'
+      value: 1,
+      label: 'Yes'
     },
     {
-      value: 'false',
-      label: 'no'
+      value: 0,
+      label: 'No'
     }
   ];
 
@@ -115,7 +100,7 @@ const UserDetails = props => {
       lastName: '',
       email: '',
       password: '',
-      isActive: '',
+      isActive: 1,
       confirmPassword: ''
     },
     touched: {},
@@ -140,7 +125,8 @@ const UserDetails = props => {
     setFormState(formState => ({
       ...formState,
       values: {
-        ...formState.values
+        ...formState.values,
+        [event.target.name]: event.target.value
       },
       touched: {
         ...formState.touched,
@@ -154,14 +140,39 @@ const UserDetails = props => {
     if (formState.values.password !== formState.values.confirmPassword) {
       setFormState(formState => ({
         ...formState,
-        errorText: "Password and Confirm password are not the same",
+        errorText: "Password and Confirm Password are not the same",
         isValid: false
       }));
     } else {
-      setFormState(formState => ({
-        ...formState,
-        errorText: "Password and Confirm password the same"
-      }));
+      const response = axios({
+        method: 'post',
+        url: '/users',
+        // headers: {'Authorization': 'Bearer' + token}, 
+        data: {
+          values: formState.values,
+        }
+      })
+      .catch(function () {
+        setFormState(formState => ({
+          ...formState,
+          errorText: "Sorry, could not make request to server. Please try again later."
+        }));
+      });
+
+      response.then(res => {
+        console.log(res);
+        let errorDisplayText = '';
+        if (errorDisplayText && errorDisplayText.length > 0) {
+          setFormState(formState => ({
+            ...formState,
+            errorText: errorDisplayText
+          }));
+        };
+        setFormState(formState => ({
+          ...formState,
+          errorText: "Save user success"
+        }));
+      });
     } 
   };
 

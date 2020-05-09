@@ -6,6 +6,7 @@ import {
   Res,
   UseGuards,
   UseFilters,
+  Body,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -19,10 +20,19 @@ import { UsersService } from './users.service';
 @UseFilters(AuthExceptionFilter)
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
   @Get('/')
   @Operations('GET_ALL_USERS')
-  getAll(@Res() res: Response) {
+  getAllUser(@Res() res: Response) {
     this.usersService.findAllUsers().then((data) => {
+      res.json({ users: data });
+    });
+  }
+
+  @Post('/')
+  @Operations('ADD_NEW_USER')
+  addUser(@Body() body, @Res() res: Response) {
+    this.usersService.addOneUser(body).then((data) => {
       res.json({ users: data });
     });
   }
