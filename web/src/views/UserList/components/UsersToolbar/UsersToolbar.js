@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
 // import { SearchInput } from 'components';
-const operationNames = JSON.parse(sessionStorage.getItem('operationNames'));
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -32,6 +31,8 @@ const useStyles = makeStyles(theme => ({
 const UsersToolbar = props => {
   const { className, ...rest } = props;
 
+  const operationNames = JSON.parse(sessionStorage.getItem('operationNames'));
+  
   const classes = useStyles();
   if (operationNames && operationNames.includes('ADD_NEW_USER')) {
     return (
@@ -44,6 +45,7 @@ const UsersToolbar = props => {
           <Button
             color="primary"
             variant="contained"
+            href = "/add-user"
           >
             Add user
           </Button>

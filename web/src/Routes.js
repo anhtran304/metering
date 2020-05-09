@@ -15,7 +15,8 @@ import {
   SignUp as SignUpView,
   SignIn as SignInView,
   NotFound as NotFoundView,
-  StationList as StationListView
+  StationList as StationListView,
+  AddUser as AddUserView
 } from './views';
 
 const Routes = () => {
@@ -46,6 +47,13 @@ const Routes = () => {
         layout={MainLayout}
         operationName = 'GET_ALL_USERS'
         path = "/users"
+      />
+      <PrivateRouter
+        component={AddUserView}
+        exact
+        layout={MainLayout}
+        operationName = 'ADD_NEW_USER'
+        path = "/add-user"
       />
       {/*<RouteWithLayout
         component={ProductListView}

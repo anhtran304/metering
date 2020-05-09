@@ -133,7 +133,7 @@ const UsersTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.users.slice(0, rowsPerPage).map(user => (
+                {data.users ? data.users.slice(0, rowsPerPage).map(user => (
                   <TableRow
                     className={classes.tableRow}
                     hover
@@ -157,7 +157,7 @@ const UsersTable = props => {
                     </TableCell>
                     <TableCell>{user.isActive.toString()}</TableCell>
                   </TableRow>
-                ))}
+                )) : <TableRow><TableCell>No Data</TableCell></TableRow>}
               </TableBody>
             </Table>
           </div>
