@@ -8,33 +8,20 @@ export class AuthService {
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
     const operations = await this.usersService.findOperations(email);
-    // let correctPass: boolean = false;
-    let test;
+    let hashOperation;
     if (user) {
-      test = bcrypt.compare(pass, user.Password).then(function(resultHash) {
+      hashOperation = bcrypt.compare(pass, user.Password).then(function(resultHash) {
         if (resultHash) {
           const { Password, ...result } = user;            
           if (operations) {
             result.operations = operations;
           }
-          console.log(result);
           return result;
         }
       });
     }
-
-    if (test) {
-      return test
+    if (hashOperation) {
+      return hashOperation;
     } return null;
-
-
-    // if (user && user.Password === pass) {
-    //   const { Password, ...result } = user;
-    //   if (operations) {
-    //     result.operations = operations;
-    //   }
-    //   return result;
-    // }
-    // return null;
   }
 }

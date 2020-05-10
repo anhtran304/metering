@@ -63,11 +63,11 @@ export class UsersService {
 
   // Add one user
   async addOneUser(@Body() body): Promise<any> {
-    const user = body.values;
-  
-    bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
-      console.log(body.values);
-    });
+    console.log(body);
+
+    // bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
+    //   console.log(body.values);
+    // });
     
     // {
     //   firstName: 'a',
