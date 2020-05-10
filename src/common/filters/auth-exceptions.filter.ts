@@ -25,7 +25,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
       });
     } else if (exception instanceof ConflictException) {
       response.status(201).json({
-        status: 400,
+        status: 409,
         timestamp: new Date().toISOString(),
         message: 'Two many user with the same email',
       });

@@ -381,10 +381,10 @@ const UserDetails = props => {
                 <FormGroup>
                   <Grid
                     container
-                    spacing={6}
+                    spacing={3}
                   >
                     {
-                      Object.keys(formState.rolesData).map(function (key, index) {
+                      formState.rolesData && Object.keys(formState.rolesData).map(function (key, index) {
                         return (
                           <Grid 
                             key={index}

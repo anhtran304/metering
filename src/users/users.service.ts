@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { pool } from '../dbConnection';
 import sql = require('mssql');
 import { Body } from '@nestjs/common';
@@ -63,35 +68,63 @@ export class UsersService {
 
   // Add one user
   async addOneUser(@Body() body): Promise<any> {
-    console.log(body);
+    let isExist: IUser;
+    let hashedPassword: string = '';
+    const requestDB = pool.request(); // create request from pool
+    // Query user from database with email address
+    const user = await requestDB
+      .input('iEmail', sql.NVarChar(50), body.values.email)
+      .input('iIsAtive', sql.Bit, 1)
+      .query(
+        'select * from Users where Email = @iEmail and isActive = @iIsAtive'
+      );
+    
 
-    // bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
-    //   console.log(body.values);
-    // });
-    
-    // {
-    //   firstName: 'a',
-    //   lastName: 'a',
-    //   email: 'a@a.com',
-    //   password: 'a',
-    //   isActive: 1,
-    //   confirmPassword: 'a'
-    // }
-    
-    // const dataUser = await pool
-    //   .request()
-    //   .input('pEmail', sql.NVarChar(50), email)
-    //   .execute('getOperationsByEmail');
-    // if (!dataOperation.recordset) {
-    //   throw new NotFoundException();
-    // } else if (dataOperation.recordset.length === 0) {
-    //   return this.operations;
+    if (user && user.recordset.length > 0) {
+      throw new ConflictException();
+    } else {
+      console.log('4');
+      console.log(body.values.password);
+      console.log(SALT_ROUNDS);
+      hashedPassword = bcrypt.hashSync(body.values.password, SALT_ROUNDS);
+      console.log(hashedPassword);
+    }
+
+    // let hashedPassword: string = '';
+    // if (isExist) {
+    //   throw new ConflictException();
     // } else {
-    //   this.operations = dataOperation.recordset.map(
-    //     (operation) => operation.OperationName
-    //   );
-    //   return this.operations;
+    //   try {
+    //     hashedPassword = await bcrypt.hash(body.values.password, SALT_ROUNDS, function(
+    //       err,
+    //       hashedPassword
+    //     ) {
+    //       return hashedPassword;
+    //     });
+    //   } catch (error) {
+    //      throw new InternalServerErrorException();
+    //   }
     // }
+
+    
+// {
+//   values: {
+//     firstName: 'a',
+//     lastName: 'a',
+//     email: 'a@gmail.com',
+//     password: 'a',
+//     isActive: 1,
+//     confirmPassword: 'a'
+//   },
+//   roles: {
+//     Admin: false,
+//     'Group Manager': false,
+//     Reporter: false,
+//     'Data Manager': false,
+//     Viewer: true
+//   }
+// }
+    
   }
 
   // Find operation assigned to user
