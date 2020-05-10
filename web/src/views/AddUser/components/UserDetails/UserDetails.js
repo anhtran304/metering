@@ -13,7 +13,12 @@ import {
   Grid,
   Button,
   TextField,
-  Typography
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  FormControl,
+  FormGroup,
+  FormHelperText,
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +35,8 @@ const useStyles = makeStyles(theme => ({
 
 const UserDetails = props => {
   const { className, ...rest } = props;
+
+  let errorMessage = '';
 
   const classes = useStyles();
 
@@ -101,11 +108,12 @@ const UserDetails = props => {
       email: '',
       password: '',
       isActive: 1,
-      confirmPassword: ''
+      confirmPassword: '',
     },
     touched: {},
     errors: {},
-    errorText: ''
+    errorText: '',
+    rolesData: {}
   });
 
   useEffect(() => {
@@ -118,6 +126,20 @@ const UserDetails = props => {
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.values]);
+
+  useEffect(() => {
+    const fetchRoleData = async () => {
+      const result = await axios({
+        method: 'get',
+        url: '/roles',
+      });
+      setFormState(formState => ({
+        ...formState,
+        rolesData: result.data.roles
+      }));
+    };
+    fetchRoleData();
+  }, []);
 
   const handleChange = event => {
     event.persist();
@@ -135,13 +157,32 @@ const UserDetails = props => {
     }));
   };
 
+  const handleChangeRoles = (event) => {
+    setFormState({
+      ...formState,
+      rolesData: {
+        ...formState.rolesData,
+        [event.target.name]: event.target.checked
+      }
+    });
+  };
+
   const handleSignIn = event => {
-    event.preventDefault();
+    event.preventDefault();   
+
+    const arrayOfTrueRoleValue = Object.values(formState.rolesData).filter(role => role === true);
+
+    if (!arrayOfTrueRoleValue || arrayOfTrueRoleValue.length === 0) {
+      errorMessage = "Please select at least one role. "
+    } 
     if (formState.values.password !== formState.values.confirmPassword) {
+      errorMessage += "Password and Confirm Password are not the same. "
+    } 
+    
+    if (errorMessage !== '') {
       setFormState(formState => ({
         ...formState,
-        errorText: "Password and Confirm Password are not the same",
-        isValid: false
+        errorText: errorMessage
       }));
     } else {
       const response = axios({
@@ -150,6 +191,7 @@ const UserDetails = props => {
         // headers: {'Authorization': 'Bearer' + token}, 
         data: {
           values: formState.values,
+          roles: formState.rolesData,
         }
       })
       .catch(function () {
@@ -328,6 +370,39 @@ const UserDetails = props => {
                 variant="outlined"
               />
             </Grid>
+            <Divider />
+            <Grid
+              item
+              md={12}
+              xs={12}
+            >
+              <FormControl component="fieldset">
+                <Typography variant='h5'>Assign Role</Typography>
+                <FormGroup>
+                  <Grid
+                    container
+                    spacing={6}
+                  >
+                    {
+                      Object.keys(formState.rolesData).map(function (key, index) {
+                        return (
+                          <Grid 
+                            key={index}
+                            item
+                            md = {2}
+                            xs = {6}>
+                            <FormControlLabel
+                              control={<Checkbox checked={formState.rolesData[key]} onChange={handleChangeRoles} name={key} />}
+                              label={key}
+                            />
+                          </Grid>
+                        )}
+                      )}
+                  </Grid>
+                </FormGroup>
+                <FormHelperText>Please select at least one role</FormHelperText>
+              </FormControl>
+            </Grid>
           </Grid>
           <Typography
             className = { classes.errorColor}
@@ -335,7 +410,6 @@ const UserDetails = props => {
             { formState.errorText }
           </Typography>
         </CardContent>
-        <Divider />
         <CardActions>
           <Button
             onClick={handleSignIn}

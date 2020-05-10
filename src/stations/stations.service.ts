@@ -20,13 +20,13 @@ export class StationsService {
 
   // Find all stations
   async findAllStations(): Promise<any> {
-    const dataStations = await pool
+    const data = await pool
       .request()
       .execute('p_ViewAllStations');
-    if (!dataStations.recordset || dataStations.recordset.length === 0) {
+    if (!data.recordset || data.recordset.length === 0) {
       throw new NotFoundException();
     } else {
-      this.stations = dataStations.recordset;
+      this.stations = data.recordset;
       return this.stations;
     }
   }
