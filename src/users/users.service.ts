@@ -1,18 +1,20 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { pool } from '../dbConnection';
 import sql = require('mssql');
-import { UnauthorizedException } from '@nestjs/common';
+import { Body } from '@nestjs/common';
+import bcrypt = require('bcrypt');
+import { SALT_ROUNDS } from '../env'
 
 export interface IUser {
-  UserId: number;
+  // UserId: number;
   FirstName: string;
   LastName: string;
-  FullName: string;
+  // FullName: string;
   Email: string;
   Password: string;
-  Language: string;
-  AvatarURL: string;
-  DateTimeCreated: Date;
+  // Language: string;
+  // AvatarURL: string;
+  // DateTimeCreated: Date;
   isAtive: number;
 }
 
@@ -47,7 +49,7 @@ export class UsersService {
   // Find all users in db
   async findAllUsers(): Promise<any> {
     const requestDB = pool.request(); // create request from pool
-    // Query user from database with email address
+    // Query all user from database
     const dataUser = await requestDB.query(
       'select UserId, FullName, Email, DateTimeCreated, isActive from Users'
     );
@@ -57,6 +59,39 @@ export class UsersService {
       this.users = dataUser.recordset;
       return this.users;
     }
+  }
+
+  // Add one user
+  async addOneUser(@Body() body): Promise<any> {
+    const user = body.values;
+  
+    bcrypt.hash(user.password, SALT_ROUNDS, function(err, hash) {
+      console.log(body.values);
+    });
+    
+    // {
+    //   firstName: 'a',
+    //   lastName: 'a',
+    //   email: 'a@a.com',
+    //   password: 'a',
+    //   isActive: 1,
+    //   confirmPassword: 'a'
+    // }
+    
+    // const dataUser = await pool
+    //   .request()
+    //   .input('pEmail', sql.NVarChar(50), email)
+    //   .execute('getOperationsByEmail');
+    // if (!dataOperation.recordset) {
+    //   throw new NotFoundException();
+    // } else if (dataOperation.recordset.length === 0) {
+    //   return this.operations;
+    // } else {
+    //   this.operations = dataOperation.recordset.map(
+    //     (operation) => operation.OperationName
+    //   );
+    //   return this.operations;
+    // }
   }
 
   // Find operation assigned to user
