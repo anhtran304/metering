@@ -88,7 +88,8 @@ const StationListComponent = props => {
                   {/* Link to open PDF */}
                   <TableCell>SLD</TableCell>
                   {/* Link to other page to list all inspection */}
-                  <TableCell>Inspection Reports</TableCell> 
+                  <TableCell>Inspection Report</TableCell> 
+                  <TableCell>Inspection Report Number</TableCell> 
                   <TableCell>Inspection Date</TableCell>
                   {/* Button -> link */}
                   <TableCell>Station Detail</TableCell>
@@ -104,8 +105,11 @@ const StationListComponent = props => {
                     <TableCell>{station.StationAddress}</TableCell>
                     <TableCell>{station.StationDiagram}</TableCell>
                     <TableCell>{station.InspectionReport}</TableCell>
+                    <TableCell>{station.InspectionReportNumber}</TableCell>
                     <TableCell>
-                      {moment(station.InspectionDate).format('DD/MM/YYYY')}
+                      {
+                        station.InspectionDate ? moment(station.InspectionDate).format('DD/MM/YYYY') : ''
+                      }
                     </TableCell>
                     <TableCell>View Detail</TableCell>
                   </TableRow>
