@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StationListComponent = props => {
+const StationDetailsComponent = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -52,7 +52,7 @@ const StationListComponent = props => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/stations',
+        url: `/stations/${}/stationdetails`,
       });
       console.log(result.data);
       setData(result.data);
@@ -84,16 +84,14 @@ const StationListComponent = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Station Name</TableCell>
-                  <TableCell>Address</TableCell>
+                  <TableCell>MeteringSchemeName</TableCell>
+                  <TableCell>CommsType</TableCell>
                   {/* Link to open PDF */}
-                  <TableCell>SLD</TableCell>
+                  <TableCell>CommsNumber</TableCell>
                   {/* Link to other page to list all inspection */}
-                  <TableCell>Inspection Report</TableCell> 
-                  <TableCell>Inspection Report Number</TableCell> 
-                  <TableCell>Inspection Date</TableCell>
-                  {/* Button -> link */}
-                  <TableCell>Station Detail</TableCell>
+                  <TableCell>MeterNMI</TableCell> 
+                  <TableCell>Installation_Type</TableCell>
+                  <TableCell>View Detail</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -106,12 +104,7 @@ const StationListComponent = props => {
                     <TableCell>{station.StationAddress}</TableCell>
                     <TableCell>{station.StationDiagram}</TableCell>
                     <TableCell>{station.InspectionReport}</TableCell>
-                    <TableCell>{station.InspectionReportNumber}</TableCell>
-                    <TableCell>
-                      {
-                        station.InspectionDate ? moment(station.InspectionDate).format('DD/MM/YYYY') : ''
-                      }
-                    </TableCell>
+                    <TableCell>{station.InspectionReport}</TableCell>
                     <TableCell>
                       <Link to = {
                         location => `${location.pathname}/${station.StationName}/stationdetails`
@@ -140,8 +133,8 @@ const StationListComponent = props => {
   );
 };
 
-StationListComponent.propTypes = {
+StationDetailsComponent.propTypes = {
   className: PropTypes.string
 };
 
-export default StationListComponent;
+export default StationDetailsComponent;
