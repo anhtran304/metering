@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import moment from 'moment';
 import axios from 'axios';
@@ -112,13 +111,7 @@ const StationListComponent = props => {
                         station.InspectionDate ? moment(station.InspectionDate).format('DD/MM/YYYY') : ''
                       }
                     </TableCell>
-                    <TableCell>
-                      <Link to = {
-                        location => `${location.pathname}/${station.StationName}/stationdetails`
-                      } >
-                        View Detail
-                      </Link>
-                    </TableCell>
+                    <TableCell>View Detail</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
