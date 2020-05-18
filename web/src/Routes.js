@@ -61,7 +61,7 @@ const Routes = () => {
         // exact
         layout={MainLayout}
         operationName = 'GET_ONE_STATIONDETAILS'
-        path = "/stations/:stationname/stationdetails"
+        path = "/stations/:stationId"
       />
       {/*<RouteWithLayout
         component={ProductListView}

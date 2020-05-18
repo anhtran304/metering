@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import moment from 'moment';
 import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -46,13 +45,13 @@ const StationDetailsComponent = props => {
 
   const classes = useStyles();
 
-  const [data, setData] = useState({ stations: [] });
+  const [data, setData] = useState({ stationDetails: [] });
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: `/stations/${}/stationdetails`,
+        url: window.location.pathname,
       });
       console.log(result.data);
       setData(result.data);
@@ -95,19 +94,19 @@ const StationDetailsComponent = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.stations && data.stations.map(station => (
+                {data.stationDetails && data.stationDetails.map(stationDetail => (
                   <TableRow
                     hover
-                    key={station.StationId}
+                    key={stationDetail.MeterNMI}
                   >
-                    <TableCell>{station.StationName}</TableCell>
-                    <TableCell>{station.StationAddress}</TableCell>
-                    <TableCell>{station.StationDiagram}</TableCell>
-                    <TableCell>{station.InspectionReport}</TableCell>
-                    <TableCell>{station.InspectionReport}</TableCell>
+                    <TableCell>{stationDetail.MeteringSchemeName}</TableCell>
+                    <TableCell>{stationDetail.CommsType}</TableCell>
+                    <TableCell>{stationDetail.CommsNumber}</TableCell>
+                    <TableCell>{stationDetail.MeterNMI}</TableCell>
+                    <TableCell>{stationDetail.Installation_Type}</TableCell>
                     <TableCell>
                       <Link to = {
-                        location => `${location.pathname}/${station.StationName}/stationdetails`
+                        location => `${location.pathname}/${stationDetail.MeterNMI}`
                       } >
                         View Detail
                       </Link>

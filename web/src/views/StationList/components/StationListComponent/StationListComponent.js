@@ -54,7 +54,6 @@ const StationListComponent = props => {
         method: 'get',
         url: '/stations',
       });
-      console.log(result.data);
       setData(result.data);
     };
     fetchData();
@@ -114,7 +113,7 @@ const StationListComponent = props => {
                     </TableCell>
                     <TableCell>
                       <Link to = {
-                        location => `${location.pathname}/${station.StationName}/stationdetails`
+                        location => `${location.pathname}/${station.StationId}`
                       } >
                         View Detail
                       </Link>

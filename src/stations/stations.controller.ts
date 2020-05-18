@@ -6,6 +6,8 @@ import {
   Res,
   UseGuards,
   UseFilters,
+  Param,
+  BadRequestException
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -27,5 +29,17 @@ export class StationsController {
     this.stationsService.findAllStations().then((data) => {
       res.json({stations: data});       
     })
+  }
+
+  @Get('/:stationId')
+  @Operations('GET_ONE_STATIONDETAILS')
+  getOneStationDetails(@Res() res: Response, @Param() params) {
+    if (params.stationId) {
+      this.stationsService.getOneStationDetails(params).then((data) => {
+        res.json({ stationDetails: data });
+      })
+    } else {
+      throw new BadRequestException();
+    }
   }
 }
