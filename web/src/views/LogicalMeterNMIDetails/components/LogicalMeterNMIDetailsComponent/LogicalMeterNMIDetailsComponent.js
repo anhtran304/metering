@@ -90,7 +90,7 @@ const LogicalMeterNMIDetailsComponent = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.logicalMeterNMIDetails && data.logicalMeterNMIDetails.map(logicalMeterNMIDetail => (
+                {data.logicalMeterNMDetails && data.logicalMeterNMDetails.map(logicalMeterNMIDetail => (
                   <TableRow
                     hover
                     key={logicalMeterNMIDetail.NMI_MSATS}

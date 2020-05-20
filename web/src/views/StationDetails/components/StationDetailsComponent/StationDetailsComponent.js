@@ -53,7 +53,6 @@ const StationDetailsComponent = props => {
         method: 'get',
         url: window.location.pathname,
       });
-      console.log(result.data);
       setData(result.data);
     };
     fetchData();

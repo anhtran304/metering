@@ -21,14 +21,14 @@ import { StationsService } from './stations.service';
 @Controller('/api/stations')
 @UseFilters(StationExceptionFilter)
 export class StationsController {
-  constructor(private stationsService: StationsService) { }
+  constructor(private stationsService: StationsService) {}
   @Get('/')
   @Operations('GET_ALL_STATIONS')
   getAll(@Res() res: Response) {
     // console.log(this.stationsService.findAllStations());
     this.stationsService.findAllStations().then((data) => {
-      res.json({stations: data});       
-    })
+      res.json({ stations: data });
+    });
   }
 
   @Get('/:stationId')
@@ -37,19 +37,19 @@ export class StationsController {
     if (params.stationId) {
       this.stationsService.getOneStationDetails(params).then((data) => {
         res.json({ stationDetails: data });
-      })
+      });
     } else {
       throw new BadRequestException();
     }
   }
 
-  @Get('/:meterNMI')
-  @Operations('GET_ONE_LOGICALMETERNMIDETAILS')
+  @Get('/:stationId/:meterNMI')
+  @Operations('GET_ALL_LOGICAL_METER_NMIS_UNDER_STATION')
   getOneLogicalMeterNMDetails(@Res() res: Response, @Param() params) {
-    if (params.satationId && params.meterNMI) {
+    if (params.stationId && params.meterNMI) {
       this.stationsService.getOneLogicalMeterNMIDetails(params).then((data) => {
         res.json({ logicalMeterNMDetails: data });
-      })
+      });
     } else {
       throw new BadRequestException();
     }
