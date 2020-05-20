@@ -47,8 +47,8 @@ export class StationsController {
   @Operations('GET_ALL_LOGICAL_METER_NMIS_UNDER_STATION')
   getOneLogicalMeterNMDetails(@Res() res: Response, @Param() params) {
     if (params.stationId && params.meterNMI) {
-      this.stationsService.getOneLogicalMeterNMIDetails(params).then((data) => {
-        res.json({ logicalMeterNMDetails: data });
+      this.stationsService.getOneMeterNMIDetails(params).then((data) => {
+        res.json({ meterNMIDetails: data });
       });
     } else {
       throw new BadRequestException();

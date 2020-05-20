@@ -15,6 +15,7 @@ export class RolesService {
   private roles: IRole[] = [];
   // Find all roles
   async findAllRoles(): Promise<any> {
+    this.roles = [];
     const requestDB = pool.request(); // create request from pool
     // Query all role from database
     const data = await requestDB.query(
