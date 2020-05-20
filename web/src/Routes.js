@@ -17,7 +17,8 @@ import {
   NotFound as NotFoundView,
   StationList as StationListView,
   AddUser as AddUserView,
-  StationDetails as StationDetailsView
+  StationDetails as StationDetailsView,
+  LogicalMeterNMIDetails as LogicalMeterNMIDetailsView
 } from './views';
 
 const Routes = () => {
@@ -58,11 +59,19 @@ const Routes = () => {
       />
       <PrivateRouter
         component={StationDetailsView}
-        // exact
+        exact
         layout={MainLayout}
         operationName = 'GET_ONE_STATIONDETAILS'
         path = "/stations/:stationId"
       />
+        <PrivateRouter
+        component={LogicalMeterNMIDetailsView}
+        exact
+        layout={MainLayout}
+        operationName = 'GET_ALL_LOGICAL_METER_NMIS_UNDER_STATION'
+        path = "/stations/:stationId?/:meterNMI?"
+      />
+    
       {/*<RouteWithLayout
         component={ProductListView}
         exact

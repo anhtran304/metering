@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import axios from 'axios';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -40,12 +40,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StationDetailsComponent = props => {
+const LogicalMeterNMIDetailsComponent = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
 
-  const [data, setData] = useState({ stationDetails: [] });
+  const [data, setData] = useState({ logicalMeterNMIDetails: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +53,7 @@ const StationDetailsComponent = props => {
         method: 'get',
         url: window.location.pathname,
       });
+      console.log(result.data);
       setData(result.data);
     };
     fetchData();
@@ -73,7 +74,7 @@ const StationDetailsComponent = props => {
         //     New entry
         //   </Button>
         // }
-        title="Stations"
+        title="Logical Meter Details"
       />
       <Divider />
       <CardContent className={classes.content}>
@@ -82,34 +83,21 @@ const StationDetailsComponent = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>MeteringSchemeName</TableCell>
-                  <TableCell>CommsType</TableCell>
+                  <TableCell>NMI_MSATS</TableCell>
                   {/* Link to open PDF */}
-                  <TableCell>CommsNumber</TableCell>
-                  {/* Link to other page to list all inspection */}
-                  <TableCell>MeterNMI</TableCell> 
-                  <TableCell>Installation_Type</TableCell>
-                  <TableCell>View Detail</TableCell>
+                  <TableCell>LogicalMeterCalculation</TableCell>
+                  <TableCell>GroupName</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.stationDetails && data.stationDetails.map(stationDetail => (
+                {data.logicalMeterNMDetails && data.logicalMeterNMDetails.map(logicalMeterNMIDetail => (
                   <TableRow
                     hover
-                    key={stationDetail.MeterNMI}
+                    key={logicalMeterNMIDetail.NMI_MSATS}
                   >
-                    <TableCell>{stationDetail.MeteringSchemeName}</TableCell>
-                    <TableCell>{stationDetail.CommsType}</TableCell>
-                    <TableCell>{stationDetail.CommsNumber}</TableCell>
-                    <TableCell>{stationDetail.MeterNMI}</TableCell>
-                    <TableCell>{stationDetail.Installation_Type}</TableCell>
-                    <TableCell>
-                      <Link to = {
-                        location => `${location.pathname}/${stationDetail.MeterNMI}`
-                      } >
-                        View Detail
-                      </Link>
-                    </TableCell>
+                    <TableCell>{logicalMeterNMIDetail.NMI_MSATS}</TableCell>
+                    <TableCell>{logicalMeterNMIDetail.LogicalMeterCalculation}</TableCell>
+                    <TableCell>{logicalMeterNMIDetail.GroupName}</TableCell>                    
                   </TableRow>
                 ))}
               </TableBody>
@@ -131,8 +119,8 @@ const StationDetailsComponent = props => {
   );
 };
 
-StationDetailsComponent.propTypes = {
+LogicalMeterNMIDetailsComponent.propTypes = {
   className: PropTypes.string
 };
 
-export default StationDetailsComponent;
+export default LogicalMeterNMIDetailsComponent;
