@@ -58,6 +58,14 @@ const StationDetailsComponent = props => {
     fetchData();
   }, []);
 
+  let CardTitle = ''
+
+  if (data.stationDetails && data.stationDetails[0]) {
+    if (data.stationDetails[0].StationName) {
+      CardTitle = data.stationDetails[0].StationName
+    }
+  }
+
   return (
     <Card
       {...rest}
@@ -73,7 +81,7 @@ const StationDetailsComponent = props => {
         //     New entry
         //   </Button>
         // }
-        title="Stations"
+        title={ `Stations: ${CardTitle}` }
       />
       <Divider />
       <CardContent className={classes.content}>

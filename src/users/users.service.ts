@@ -31,6 +31,7 @@ export class UsersService {
 
   // Find one user by email
   async findOneByEmail(email: string): Promise<any> {
+    this.users = [];
     const requestDB = pool.request(); // create request from pool
     // Query user from database with email address
     const dataUser = await requestDB
@@ -53,6 +54,7 @@ export class UsersService {
 
   // Find all users in db
   async findAllUsers(): Promise<any> {
+    this.users = [];
     const requestDB = pool.request(); // create request from pool
     // Query all user from database
     const dataUser = await requestDB.query(
@@ -129,6 +131,7 @@ export class UsersService {
 
   // Find operation assigned to user
   async findOperations(email: string): Promise<any> {
+    this.operations = [];
     const dataOperation = await pool
       .request()
       .input('pEmail', sql.NVarChar(50), email)

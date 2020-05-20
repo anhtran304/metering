@@ -45,7 +45,7 @@ const LogicalMeterNMIDetailsComponent = props => {
 
   const classes = useStyles();
 
-  const [data, setData] = useState({ logicalMeterNMIDetails: [] });
+  const [data, setData] = useState({ meterNMDetails: [] });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,11 +53,70 @@ const LogicalMeterNMIDetailsComponent = props => {
         method: 'get',
         url: window.location.pathname,
       });
-      console.log(result.data);
+      // console.log(result.data);
       setData(result.data);
     };
     fetchData();
   }, []);
+
+  let TableData = null;
+  let CardTitle = ' ';
+
+  if (data.meterNMIDetails) {
+    if (data.meterNMIDetails.type === 'logical') {
+      CardTitle = 'Logical';
+      TableData = 
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>NMI_MSATS</TableCell>
+                    {/* Link to open PDF */}
+                    <TableCell>LogicalMeterCalculation</TableCell>
+                    <TableCell>GroupName</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.meterNMIDetails.meterNMIDetails && data.meterNMIDetails.meterNMIDetails.map(meterNMIDetail => (
+                    <TableRow
+                      hover
+                      key={meterNMIDetail.NMI_MSATS}
+                    >
+                      <TableCell>{meterNMIDetail.NMI_MSATS}</TableCell>
+                      <TableCell>{meterNMIDetail.LogicalMeterCalculation}</TableCell>
+                      <TableCell>{meterNMIDetail.GroupName}</TableCell>                    
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+    } else if (data.meterNMIDetails.type === 'physical') {
+      CardTitle = 'Physical';
+      TableData = 
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>NMI_MSATS</TableCell>
+                    {/* Link to open PDF */}
+                    <TableCell>MeterName</TableCell>
+                    <TableCell>MeterSerialNumber</TableCell>
+                    <TableCell>GroupName</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.meterNMIDetails.meterNMIDetails && data.meterNMIDetails.meterNMIDetails.map(meterNMIDetail => (
+                    <TableRow
+                      hover
+                      key={meterNMIDetail.NMI_MSATS}
+                    >
+                      <TableCell>{meterNMIDetail.NMI_MSATS}</TableCell>
+                      <TableCell>{meterNMIDetail.MeterName}</TableCell>
+                      <TableCell>{meterNMIDetail.MeterSerialNumber}</TableCell>                    
+                      <TableCell>{meterNMIDetail.GroupName}</TableCell>                    
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+    }
+  }
 
   return (
     <Card
@@ -74,34 +133,13 @@ const LogicalMeterNMIDetailsComponent = props => {
         //     New entry
         //   </Button>
         // }
-        title="Logical Meter Details"
+        title={ `Meter Details: ${CardTitle}` }
       />
       <Divider />
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>NMI_MSATS</TableCell>
-                  {/* Link to open PDF */}
-                  <TableCell>LogicalMeterCalculation</TableCell>
-                  <TableCell>GroupName</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.logicalMeterNMDetails && data.logicalMeterNMDetails.map(logicalMeterNMIDetail => (
-                  <TableRow
-                    hover
-                    key={logicalMeterNMIDetail.NMI_MSATS}
-                  >
-                    <TableCell>{logicalMeterNMIDetail.NMI_MSATS}</TableCell>
-                    <TableCell>{logicalMeterNMIDetail.LogicalMeterCalculation}</TableCell>
-                    <TableCell>{logicalMeterNMIDetail.GroupName}</TableCell>                    
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            { TableData }
           </div>
         </PerfectScrollbar>
       </CardContent>
