@@ -27,10 +27,24 @@ export interface IStationDetail {
   isAtive: number;
 }
 
+export interface ILogicalMeterNMIDetail {
+  UserId: number;
+  FirstName: string;
+  LastName: string;
+  FullName: string;
+  Email: string;
+  Password: string;
+  Language: string;
+  AvatarURL: string;
+  DateTimeCreated: Date;
+  isAtive: number;
+}
+
 @Injectable()
 export class StationsService {
   private stations: IStation[] = [];
   private stationDetails: IStationDetail[] = [];
+  private logicalMeterNMIDetails: ILogicalMeterNMIDetail[] = [];
 
   // Find all stations
   async findAllStations(): Promise<any> {
@@ -45,7 +59,7 @@ export class StationsService {
     }
   }
 
-  // Find all stations
+  // Find one station details
   async getOneStationDetails(params): Promise<any> {
     const data = await pool
       .request()
@@ -60,4 +74,22 @@ export class StationsService {
       return this.stationDetails;
     }
   }
+
+  // Find one logical meter details
+  async getOneLogicalMeterNMIDetails(params): Promise<any> {
+    const data = await pool
+      .request()
+      .input('stationId', sql.NVarChar(50), params.stationId)
+      .input('meterNMI', sql.NVarChar(100), params.meterNMI)
+      .execute('p_ViewLogicalMeter');
+    if (!data.recordset) {
+      throw new NotFoundException();
+    } else if (data.recordset.length === 0) {
+      return this.logicalMeterNMIDetails;
+    } else {
+      this.logicalMeterNMIDetails = data.recordset;
+      return this.logicalMeterNMIDetails;
+    }
+  }
 }
+

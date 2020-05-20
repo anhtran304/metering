@@ -11,4 +11,4 @@ export { default as UserList } from './UserList';
 export { default as StationList } from './StationList';
 export { default as AddUser } from './AddUser';
 export { default as StationDetails } from './StationDetails';
-
+export { default as LogicalMeterNMIDetails } from './LogicalMeterNMIDetails';
