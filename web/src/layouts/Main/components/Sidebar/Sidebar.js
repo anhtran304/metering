@@ -6,6 +6,7 @@ import { Divider, Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 // import TextFieldsIcon from '@material-ui/icons/TextFields';
 // import ImageIcon from '@material-ui/icons/Image';
 // import AccountBoxIcon from '@material-ui/icons/AccountBox';
@@ -63,7 +64,14 @@ const Sidebar = props => {
       href: '/users',
       isPublic: false,
       operationName: 'GET_ALL_USERS',
-      icon: < PeopleIcon />
+      icon: <PeopleIcon />
+    },
+    {
+      title: 'Submit Inspection',
+      href: '/inspectionreports',
+      isPublic: false,
+      operationName: 'ADD_ONE_INSPECTION_REPORT',
+      icon: <LibraryBooksIcon />
     },
     {
       title: 'Authentication',
