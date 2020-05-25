@@ -79,7 +79,7 @@ const Routes = () => {
         operationName = 'ADD_ONE_INSPECTION_REPORT'
         path = "/inspectionreports"
       />
-    
+
       {/*<RouteWithLayout
         component={ProductListView}
         exact

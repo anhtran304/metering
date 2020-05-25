@@ -71,6 +71,19 @@ export class StationsService {
     }
   }
 
+  // Get all station names
+  async getAllStationNames(): Promise<any> {
+    this.stations = [];
+    const data = await pool.request().execute('p_ViewAllStations');
+    if (!data.recordset) {
+      throw new NotFoundException();
+    } else {
+      this.stations = data.recordset;
+      return this.stations;
+    }
+  }
+
+
   // Find one station details
   async getOneStationDetails(params): Promise<any> {
     this.stationDetails = [];
