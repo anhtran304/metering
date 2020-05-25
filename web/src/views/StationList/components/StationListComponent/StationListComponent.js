@@ -108,7 +108,7 @@ const StationListComponent = props => {
                     <TableCell>{station.InspectionReportNumber}</TableCell>
                     <TableCell>
                       {
-                        station.InspectionDate ? moment(station.InspectionDate).format('DD/MM/YYYY') : ''
+                        station.InspectionDate ? moment(station.InspectionDate).format('YYYY-MM-DD') : ''
                       }
                     </TableCell>
                     <TableCell>

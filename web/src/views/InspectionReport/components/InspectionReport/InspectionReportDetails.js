@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/styles';
+import moment from 'moment';
+import Dropzone from 'react-dropzone';
 import {
   Card,
   CardHeader,
@@ -14,6 +16,7 @@ import {
   Button,
   TextField,
   Typography,
+  Paper,
   // FormControlLabel,
   // Checkbox,
   // FormControl,
@@ -29,6 +32,18 @@ const useStyles = makeStyles(theme => ({
   errorColor: {
     marginTop: theme.spacing(2),
     color: theme.palette.error.main
+  },
+  paper: {
+    display: 'flex',
+    textAlign: 'center',
+    '& > *': {
+      margin: theme.spacing(1),
+      width: '100%',
+      height: theme.spacing(10),
+    }
+  },
+  textUnderLine: {
+    textDecoration: 'underline',
   }
 }));
 
@@ -40,80 +55,30 @@ const InspectionReportDetails = props => {
 
   const classes = useStyles();
 
-  const isActive = [
-    {
-      value: 1,
-      label: 'GHDS'
-    }, 
-    {
-      value: 2,
-      label: 'TKLO updated'
-    }
-  ];
-
   const schema = {
-    firstName: {
+    reportNumber: {
       presence: {
         allowEmpty: false,
         message: 'is required'
       },
       length: {
-        maximum: 64
-      }
-    },
-    lastName: {
-      presence: {
-        allowEmpty: false,
-        message: 'is required'
-      },
-      length: {
-        maximum: 64
-      }
-    },
-    email: {
-      presence: {
-        allowEmpty: false,
-        message: 'is required'
-      },
-      email: true,
-      length: {
-        maximum: 64
-      }
-    },
-    password: {
-      presence: {
-        allowEmpty: false,
-        message: 'is required'
-      },
-      length: {
-        maximum: 128
-      }
-    },
-    confirmPassword: {
-      presence: {
-        allowEmpty: false,
-        message: 'is required'
-      },
-      length: {
-        maximum: 128
+        minimum: 10
       }
     }
   };
 
+  const now = moment(new window.Date()).format('YYYY-MM-DD');
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      // isActive: 0,
-      confirmPassword: '',
+      reportNumber: '',
+      selectedFile: null
     },
     touched: {},
     errors: {},
     errorText: '',
-    rolesData: {}
+    stations: []
   });
 
   useEffect(() => {
@@ -128,18 +93,22 @@ const InspectionReportDetails = props => {
   }, [formState.values]);
 
   useEffect(() => {
-    const fetchRoleData = async () => {
+    const fetchStationData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/roles',
+        url: '/public/allstationnames',
       });
       setFormState(formState => ({
         ...formState,
-        rolesData: result.data.roles
+        stations: result.data.stations,
       }));
     };
-    fetchRoleData();
+    fetchStationData();
   }, []);
+
+  const handleFile = function handleFile(file) {
+    console.log(file);
+  }
 
   const handleChange = event => {
     event.persist();
@@ -158,55 +127,9 @@ const InspectionReportDetails = props => {
   };
 
 
-  const handleSignIn = event => {
-    event.preventDefault();   
-
-    const arrayOfTrueRoleValue = Object.values(formState.rolesData).filter(role => role === true);
-
-    if (!arrayOfTrueRoleValue || arrayOfTrueRoleValue.length === 0) {
-      errorMessage = "Please select at least one role. "
-    } 
-    if (formState.values.password !== formState.values.confirmPassword) {
-      errorMessage += "Password and Confirm Password are not the same. "
-    } 
-    
-    if (errorMessage !== '') {
-      setFormState(formState => ({
-        ...formState,
-        errorText: errorMessage
-      }));
-    } else {
-      const response = axios({
-        method: 'post',
-        url: '/users',
-        // headers: {'Authorization': 'Bearer' + token}, 
-        data: {
-          values: formState.values,
-          roles: formState.rolesData,
-        }
-      })
-      .catch(function () {
-        setFormState(formState => ({
-          ...formState,
-          errorText: "Sorry, could not make request to server. Please try again later."
-        }));
-      });
-
-      response.then(res => {
-        console.log(res);
-        let errorDisplayText = '';
-        if (errorDisplayText && errorDisplayText.length > 0) {
-          setFormState(formState => ({
-            ...formState,
-            errorText: errorDisplayText
-          }));
-        };
-        setFormState(formState => ({
-          ...formState,
-          errorText: "Save user success"
-        }));
-      });
-    } 
+  const handleSubmit = event => {
+    event.preventDefault();
+    console.log('Submit');
   };
 
   const hasError = field =>
@@ -246,15 +169,15 @@ const InspectionReportDetails = props => {
                 select
                 // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
-                value={formState.values.isActive}
                 variant="outlined"
+                InputLabelProps={{ shrink: true }}
               >
-                {isActive.map(option => (
+                {formState.stations && formState.stations.map(option => (
                   <option
-                    key={option.value}
-                    value={option.value}
+                    key={option.StationId}
+                    value={option.StationName}
                   >
-                    {option.label}
+                    {option.StationName}
                   </option>
                 ))}
               </TextField>
@@ -265,17 +188,17 @@ const InspectionReportDetails = props => {
               xs={12}
             >
               <TextField
-                error={hasError('firstName')}
+                error={hasError('reportNumber')}
                 fullWidth
                 helperText = {
-                  hasError('firstName') ? formState.errors.firstName[0] : null
+                  hasError('reportNumber') ? formState.errors.reportNumber[0] : null
                 }
                 label = "Report Number"
                 margin="dense"
-                name="firstName"
+                name = "reportNumber"
                 onChange={handleChange}
                 required
-                value={formState.values.firstName}
+                value={formState.values.reportNumber}
                 variant="outlined"
               />
             </Grid>
@@ -285,19 +208,14 @@ const InspectionReportDetails = props => {
               xs={12}
             >
               <TextField
-                error={hasError('password')}
-                fullWidth
-                helperText={
-                  hasError('password') ? formState.errors.password[0] : null
-                }
+                id="date"
                 label="Inspection Date"
-                margin="dense"
-                name="password"
-                onChange={handleChange}
-                required
-                type="password"
-                value={formState.values.password}
-                variant="outlined"
+                type="date"
+                defaultValue={now}
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid
@@ -305,7 +223,16 @@ const InspectionReportDetails = props => {
               md={12}
               xs={12}
             >
-              <Typography>Upload Report</Typography>
+              <Dropzone onDrop={acceptedFiles => handleFile(acceptedFiles)}>
+                {({getRootProps, getInputProps}) => (
+                  <section>
+                    <Paper variant="outlined" {...getRootProps()} className={classes.paper}>
+                      <input {...getInputProps()} />
+                      <Typography variant="h6" className={classes.textUnderLine}>Drag 'n' drop some files here, or click to select report files</Typography>
+                    </Paper>
+                  </section>
+                )}
+              </Dropzone>
             </Grid>
           </Grid>
           <Typography
@@ -316,12 +243,12 @@ const InspectionReportDetails = props => {
         </CardContent>
         <CardActions>
           <Button
-            onClick={handleSignIn}
+            onClick={handleSubmit}
             color="primary"
             variant="contained"
             disabled={!formState.isValid}
           >
-            Save User
+            Save Report
           </Button>
         </CardActions>
       </form>

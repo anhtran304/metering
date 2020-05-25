@@ -17,8 +17,8 @@ export class OperationsGuard implements CanActivate {
     const user = request.user;
     if (!user || !user.operations || user.operations.lengh === 0) {
       return false;
-    } else {      
-      const userOperations = user.operations.filter((operation) => operation === operationNames[0]);      
+    } else {
+      const userOperations = user.operations.filter((operation) => operation === operationNames[0]);
       if (userOperations && userOperations.length > 0) {
         return true;
       } else {
