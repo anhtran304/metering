@@ -168,17 +168,16 @@ const UserDetails = props => {
   };
 
   const handleSignIn = event => {
-    event.preventDefault();   
+    event.preventDefault();
 
     const arrayOfTrueRoleValue = Object.values(formState.rolesData).filter(role => role === true);
 
     if (!arrayOfTrueRoleValue || arrayOfTrueRoleValue.length === 0) {
       errorMessage = "Please select at least one role. "
-    } 
+    }
     if (formState.values.password !== formState.values.confirmPassword) {
       errorMessage += "Password and Confirm Password are not the same. "
-    } 
-    
+    }
     if (errorMessage !== '') {
       setFormState(formState => ({
         ...formState,

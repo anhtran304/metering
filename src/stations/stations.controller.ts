@@ -7,7 +7,10 @@ import {
   UseGuards,
   UseFilters,
   Param,
-  BadRequestException
+  BadRequestException,
+  Body,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -15,6 +18,7 @@ import { OperationsGuard } from '../common/guards/operation.guard';
 import { StationExceptionFilter } from '../common/filters/station-exceptions.filter';
 import { Operations } from 'src/common/decorators/operations.decorator';
 import { StationsService } from './stations.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @UseGuards(OperationsGuard)
@@ -53,5 +57,25 @@ export class StationsController {
     } else {
       throw new BadRequestException();
     }
+  }
+
+  @Post('/:stationId/inspectionreport')
+  @UseInterceptors(FileInterceptor('file'))
+  @Operations('ADD_ONE_INSPECTION_REPORT')
+  postOneInspectionReport(
+    @Res() res: Response,
+    @Param() params,
+    @Body() body,
+    @UploadedFile() file
+  ) {
+    console.log(body);
+    console.log(file);
+    // if (params.stationId) {
+    //   this.stationsService.getOneStationDetails(params).then((data) => {
+    //     res.json({ stationDetails: data });
+    //   });
+    // } else {
+    //   throw new BadRequestException();
+    // }
   }
 }

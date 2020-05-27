@@ -5,7 +5,6 @@ import validate from 'validate.js';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/styles';
 import moment from 'moment';
-import Dropzone from 'react-dropzone';
 import {
   Card,
   CardHeader,
@@ -16,7 +15,6 @@ import {
   Button,
   TextField,
   Typography,
-  Paper,
   // FormControlLabel,
   // Checkbox,
   // FormControl,
@@ -32,26 +30,11 @@ const useStyles = makeStyles(theme => ({
   errorColor: {
     marginTop: theme.spacing(2),
     color: theme.palette.error.main
-  },
-  paper: {
-    display: 'flex',
-    textAlign: 'center',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: '100%',
-      height: theme.spacing(10),
-    }
-  },
-  textUnderLine: {
-    textDecoration: 'underline',
   }
 }));
 
-
 const InspectionReportDetails = props => {
   const { className, ...rest } = props;
-
-  let errorMessage = '';
 
   const classes = useStyles();
 
@@ -67,13 +50,12 @@ const InspectionReportDetails = props => {
     }
   };
 
-  const now = moment(new window.Date()).format('YYYY-MM-DD');
-
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
       reportNumber: '',
-      selectedFile: null
+      selectedFile: null,
+      inspectionDate: moment().format('YYYY-MM-DD')
     },
     touched: {},
     errors: {},
@@ -106,8 +88,42 @@ const InspectionReportDetails = props => {
     fetchStationData();
   }, []);
 
-  const handleFile = function handleFile(file) {
-    console.log(file);
+  const handleFile = event => {
+    event.preventDefault();
+    if (event.target) {
+      if (event.target.files) {
+        setFormState(formState => ({
+          ...formState,
+          values: {
+            ...formState.values,
+            selectedFile: event.target.files[0]
+          }
+        }));
+      }
+    }
+  }
+
+  const handleDate = event => {
+     event.preventDefault();
+     moment(event.target.value).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD') ?
+      setFormState(formState => ({
+        ...formState,
+        isValid: false,
+        errorText: 'Inspection date can not be in the past!',
+        values : {
+          ...formState.values,
+        [event.target.name]: event.target.value
+        }
+      })) :
+      setFormState(formState => ({
+        ...formState,
+        isValid: true,
+        errorText: '',
+        values : {
+          ...formState.values,
+        [event.target.name]: event.target.value
+        }
+      }))
   }
 
   const handleChange = event => {
@@ -129,7 +145,29 @@ const InspectionReportDetails = props => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('Submit');
+    if (!formState.values.selectedFile) {
+      setFormState(formState => ({
+        ...formState,
+        isValid: false,
+        errorText: 'Please upload file!'
+      }))
+    } else if (formState.errorText.length === 0) {
+        console.log(formState.values);
+        const response = axios({
+          method: 'post',
+          url: `/stations/1/inspectionreport`,
+          // headers: {'Authorization': 'Bearer' + token},
+          data: {
+            values: formState.values
+          }
+        })
+        .catch(function () {
+          setFormState(formState => ({
+            ...formState,
+            errorText: "Sorry, could not make request to server. Please try again later."
+          }));
+        });
+    }
   };
 
   const hasError = field =>
@@ -210,8 +248,11 @@ const InspectionReportDetails = props => {
               <TextField
                 id="date"
                 label="Inspection Date"
+                error={hasError('inspectionDate')}
                 type="date"
-                defaultValue={now}
+                name="inspectionDate"
+                onChange={handleDate}
+                value={formState.values.inspectionDate}
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,
@@ -223,16 +264,7 @@ const InspectionReportDetails = props => {
               md={12}
               xs={12}
             >
-              <Dropzone onDrop={acceptedFiles => handleFile(acceptedFiles)}>
-                {({getRootProps, getInputProps}) => (
-                  <section>
-                    <Paper variant="outlined" {...getRootProps()} className={classes.paper}>
-                      <input {...getInputProps()} />
-                      <Typography variant="h6" className={classes.textUnderLine}>Drag 'n' drop some files here, or click to select report files</Typography>
-                    </Paper>
-                  </section>
-                )}
-              </Dropzone>
+              <input type="file" name="file" onChange={handleFile}/>
             </Grid>
           </Grid>
           <Typography

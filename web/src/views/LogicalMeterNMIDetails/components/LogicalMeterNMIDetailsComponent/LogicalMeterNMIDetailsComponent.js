@@ -65,7 +65,7 @@ const LogicalMeterNMIDetailsComponent = props => {
   if (data.meterNMIDetails) {
     if (data.meterNMIDetails.type === 'logical') {
       CardTitle = 'Logical';
-      TableData = 
+      TableData =
               <Table>
                 <TableHead>
                   <TableRow>
@@ -83,14 +83,14 @@ const LogicalMeterNMIDetailsComponent = props => {
                     >
                       <TableCell>{meterNMIDetail.NMI_MSATS}</TableCell>
                       <TableCell>{meterNMIDetail.LogicalMeterCalculation}</TableCell>
-                      <TableCell>{meterNMIDetail.GroupName}</TableCell>                    
+                      <TableCell>{meterNMIDetail.GroupName}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
     } else if (data.meterNMIDetails.type === 'physical') {
       CardTitle = 'Physical';
-      TableData = 
+      TableData =
               <Table>
                 <TableHead>
                   <TableRow>
