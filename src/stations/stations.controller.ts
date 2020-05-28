@@ -18,7 +18,7 @@ import { OperationsGuard } from '../common/guards/operation.guard';
 import { StationExceptionFilter } from '../common/filters/station-exceptions.filter';
 import { Operations } from 'src/common/decorators/operations.decorator';
 import { StationsService } from './stations.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 
 @UseGuards(OperationsGuard)
@@ -60,7 +60,7 @@ export class StationsController {
   }
 
   @Post('/:stationId/inspectionreport')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(AnyFilesInterceptor())
   @Operations('ADD_ONE_INSPECTION_REPORT')
   postOneInspectionReport(
     @Res() res: Response,

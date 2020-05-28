@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
-import axios from 'axios';
+import axios, { post } from 'axios';
 import { makeStyles } from '@material-ui/styles';
 import moment from 'moment';
 import {
@@ -153,20 +153,42 @@ const InspectionReportDetails = props => {
       }))
     } else if (formState.errorText.length === 0) {
         console.log(formState.values);
-        const response = axios({
-          method: 'post',
-          url: `/stations/1/inspectionreport`,
-          // headers: {'Authorization': 'Bearer' + token},
-          data: {
-            values: formState.values
+
+
+        const FormData = require('form-data');
+
+        const config = {
+          headers: {
+              'content-type': 'multipart/form-data'
           }
-        })
-        .catch(function () {
-          setFormState(formState => ({
-            ...formState,
-            errorText: "Sorry, could not make request to server. Please try again later."
-          }));
-        });
+        }
+
+        const url = '/stations/1/inspectionreport';
+
+        const form = new FormData();
+        form.append('reportNumber', formState.values.reportNumber);
+        form.append('inspectionDate', formState.values.inspectionDate);
+        form.append('selectedFile', formState.values.selectedFile);
+        // form.append('my_buffer', new Buffer(10));
+        // form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
+
+        post(url, form, config);
+
+
+        // const response = axios({
+        //   method: 'post',
+        //   url: `/stations/1/inspectionreport`,
+        //   // headers: {'Authorization': 'Bearer' + token},
+        //   data: {
+        //     values: formState.values
+        //   }
+        // })
+        // .catch(function () {
+        //   setFormState(formState => ({
+        //     ...formState,
+        //     errorText: "Sorry, could not make request to server. Please try again later."
+        //   }));
+        // });
     }
   };
 
