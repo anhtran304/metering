@@ -15,11 +15,6 @@ import {
   Button,
   TextField,
   Typography,
-  // FormControlLabel,
-  // Checkbox,
-  // FormControl,
-  // FormGroup,
-  // FormHelperText,
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +48,7 @@ const InspectionReportDetails = props => {
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
+      stationId: '',
       reportNumber: '',
       selectedFile: null,
       inspectionDate: moment().format('YYYY-MM-DD')
@@ -60,6 +56,7 @@ const InspectionReportDetails = props => {
     touched: {},
     errors: {},
     errorText: '',
+    successText: '',
     stations: []
   });
 
@@ -82,6 +79,10 @@ const InspectionReportDetails = props => {
       });
       setFormState(formState => ({
         ...formState,
+        values: {
+          ...formState.values,
+          stationId: result.data.stations[0].StationId
+        },
         stations: result.data.stations,
       }));
     };
@@ -142,6 +143,20 @@ const InspectionReportDetails = props => {
     }));
   };
 
+  const handleOption = event => {
+    event.preventDefault();
+    const selectedIndex = event.target.options.selectedIndex;
+
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        stationId: event.target.options[selectedIndex].getAttribute('data-key')
+      }
+    }));
+
+  };
+
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -152,43 +167,38 @@ const InspectionReportDetails = props => {
         errorText: 'Please upload file!'
       }))
     } else if (formState.errorText.length === 0) {
-        console.log(formState.values);
-
-
-        const FormData = require('form-data');
-
+        const form = new FormData();
         const config = {
           headers: {
               'content-type': 'multipart/form-data'
           }
         }
+        const url = '/stations/inspectionreport';
 
-        const url = '/stations/1/inspectionreport';
-
-        const form = new FormData();
+        form.append('stationId', formState.values.stationId);
         form.append('reportNumber', formState.values.reportNumber);
         form.append('inspectionDate', formState.values.inspectionDate);
         form.append('selectedFile', formState.values.selectedFile);
-        // form.append('my_buffer', new Buffer(10));
-        // form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
 
-        post(url, form, config);
+        const response = post(url, form, config);
 
-
-        // const response = axios({
-        //   method: 'post',
-        //   url: `/stations/1/inspectionreport`,
-        //   // headers: {'Authorization': 'Bearer' + token},
-        //   data: {
-        //     values: formState.values
-        //   }
-        // })
-        // .catch(function () {
-        //   setFormState(formState => ({
-        //     ...formState,
-        //     errorText: "Sorry, could not make request to server. Please try again later."
-        //   }));
-        // });
+        response.then(data => {
+          setFormState(formState => ({
+            ...formState,
+            values: {
+              ...formState,
+              reportNumber: '',
+              selectedFile: null,
+              inspectionDate: moment().format('YYYY-MM-DD')
+            },
+            successText: "Adding report successfully!"
+          }));
+        }).catch(error => {
+          setFormState(formState => ({
+            ...formState,
+            errorText: "Sorry, something went wrong. Please try again later."
+          }));
+        });
     }
   };
 
@@ -224,7 +234,7 @@ const InspectionReportDetails = props => {
                 label="Station"
                 margin="dense"
                 name="station"
-                onChange={handleChange}
+                onChange={handleOption}
                 required
                 select
                 // eslint-disable-next-line react/jsx-sort-props
@@ -236,6 +246,7 @@ const InspectionReportDetails = props => {
                   <option
                     key={option.StationId}
                     value={option.StationName}
+                    data-key={option.StationId}
                   >
                     {option.StationName}
                   </option>
@@ -293,6 +304,10 @@ const InspectionReportDetails = props => {
             className = { classes.errorColor}
           >
             { formState.errorText }
+          </Typography>
+          <Typography
+          >
+            { formState.successText }
           </Typography>
         </CardContent>
         <CardActions>

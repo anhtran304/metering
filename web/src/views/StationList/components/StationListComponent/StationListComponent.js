@@ -88,7 +88,7 @@ const StationListComponent = props => {
                   {/* Link to open PDF */}
                   <TableCell>SLD</TableCell>
                   {/* Link to other page to list all inspection */}
-                  <TableCell>Inspection Report</TableCell> 
+                  <TableCell>Lastest Inspection Report</TableCell> 
                   <TableCell>Inspection Report Number</TableCell> 
                   <TableCell>Inspection Date</TableCell>
                   {/* Button -> link */}
