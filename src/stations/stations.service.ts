@@ -83,7 +83,6 @@ export class StationsService {
     }
   }
 
-
   // Find one station details
   async getOneStationDetails(params): Promise<any> {
     this.stationDetails = [];
@@ -134,11 +133,28 @@ export class StationsService {
       }
     } else {
       this.logicalMeterNMIDetails = dataLogical.recordset;
-        return {
-          type: 'logical',
-          meterNMIDetails: this.logicalMeterNMIDetails
-        };
+      return {
+        type: 'logical',
+        meterNMIDetails: this.logicalMeterNMIDetails,
+      };
     }
+  }
+
+  // Post one inspection report
+  async postOneInspectionReport(
+    stationId: Number,
+    reportNumber: String,
+    inspectionDate: Date,
+    path: String
+  ): Promise<any> {
+    const data = await pool
+      .request()
+      .input('StationInt', sql.BigInt, stationId)
+      .input('inspectionReportNumber', sql.NVarChar(30), reportNumber)
+      .input('InspectionDate', sql.Date, inspectionDate)
+      .input('InspectionReportPath', sql.NVarChar, path)
+      .execute('P_AddInspectionReport');
+      return data;
   }
 }
 

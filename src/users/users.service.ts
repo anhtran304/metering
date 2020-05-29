@@ -80,7 +80,7 @@ export class UsersService {
       .query(
         'select * from Users where Email = @iEmail and isActive = @iIsAtive'
       );
-    
+
 
     if (user && user.recordset.length > 0) {
       throw new ConflictException();

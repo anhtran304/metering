@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
-import axios from 'axios';
+import axios, { post } from 'axios';
 import { makeStyles } from '@material-ui/styles';
 import moment from 'moment';
-import Dropzone from 'react-dropzone';
 import {
   Card,
   CardHeader,
@@ -16,12 +15,6 @@ import {
   Button,
   TextField,
   Typography,
-  Paper,
-  // FormControlLabel,
-  // Checkbox,
-  // FormControl,
-  // FormGroup,
-  // FormHelperText,
 } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -32,26 +25,11 @@ const useStyles = makeStyles(theme => ({
   errorColor: {
     marginTop: theme.spacing(2),
     color: theme.palette.error.main
-  },
-  paper: {
-    display: 'flex',
-    textAlign: 'center',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: '100%',
-      height: theme.spacing(10),
-    }
-  },
-  textUnderLine: {
-    textDecoration: 'underline',
   }
 }));
 
-
 const InspectionReportDetails = props => {
   const { className, ...rest } = props;
-
-  let errorMessage = '';
 
   const classes = useStyles();
 
@@ -67,17 +45,18 @@ const InspectionReportDetails = props => {
     }
   };
 
-  const now = moment(new window.Date()).format('YYYY-MM-DD');
-
   const [formState, setFormState] = useState({
     isValid: false,
     values: {
+      stationId: '',
       reportNumber: '',
-      selectedFile: null
+      selectedFile: null,
+      inspectionDate: moment().format('YYYY-MM-DD')
     },
     touched: {},
     errors: {},
     errorText: '',
+    successText: '',
     stations: []
   });
 
@@ -100,14 +79,52 @@ const InspectionReportDetails = props => {
       });
       setFormState(formState => ({
         ...formState,
+        values: {
+          ...formState.values,
+          stationId: result.data.stations[0].StationId
+        },
         stations: result.data.stations,
       }));
     };
     fetchStationData();
   }, []);
 
-  const handleFile = function handleFile(file) {
-    console.log(file);
+  const handleFile = event => {
+    event.preventDefault();
+    if (event.target) {
+      if (event.target.files) {
+        setFormState(formState => ({
+          ...formState,
+          values: {
+            ...formState.values,
+            selectedFile: event.target.files[0]
+          }
+        }));
+      }
+    }
+  }
+
+  const handleDate = event => {
+     event.preventDefault();
+     moment(event.target.value).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD') ?
+      setFormState(formState => ({
+        ...formState,
+        isValid: false,
+        errorText: 'Inspection date can not be in the past!',
+        values : {
+          ...formState.values,
+        [event.target.name]: event.target.value
+        }
+      })) :
+      setFormState(formState => ({
+        ...formState,
+        isValid: true,
+        errorText: '',
+        values : {
+          ...formState.values,
+        [event.target.name]: event.target.value
+        }
+      }))
   }
 
   const handleChange = event => {
@@ -126,10 +143,63 @@ const InspectionReportDetails = props => {
     }));
   };
 
+  const handleOption = event => {
+    event.preventDefault();
+    const selectedIndex = event.target.options.selectedIndex;
+
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        stationId: event.target.options[selectedIndex].getAttribute('data-key')
+      }
+    }));
+
+  };
+
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('Submit');
+    if (!formState.values.selectedFile) {
+      setFormState(formState => ({
+        ...formState,
+        isValid: false,
+        errorText: 'Please upload file!'
+      }))
+    } else if (formState.errorText.length === 0) {
+        const form = new FormData();
+        const config = {
+          headers: {
+              'content-type': 'multipart/form-data'
+          }
+        }
+        const url = '/stations/inspectionreport';
+
+        form.append('stationId', formState.values.stationId);
+        form.append('reportNumber', formState.values.reportNumber);
+        form.append('inspectionDate', formState.values.inspectionDate);
+        form.append('selectedFile', formState.values.selectedFile);
+
+        const response = post(url, form, config);
+
+        response.then(data => {
+          setFormState(formState => ({
+            ...formState,
+            values: {
+              ...formState,
+              reportNumber: '',
+              selectedFile: null,
+              inspectionDate: moment().format('YYYY-MM-DD')
+            },
+            successText: "Adding report successfully!"
+          }));
+        }).catch(error => {
+          setFormState(formState => ({
+            ...formState,
+            errorText: "Sorry, something went wrong. Please try again later."
+          }));
+        });
+    }
   };
 
   const hasError = field =>
@@ -164,7 +234,7 @@ const InspectionReportDetails = props => {
                 label="Station"
                 margin="dense"
                 name="station"
-                onChange={handleChange}
+                onChange={handleOption}
                 required
                 select
                 // eslint-disable-next-line react/jsx-sort-props
@@ -176,6 +246,7 @@ const InspectionReportDetails = props => {
                   <option
                     key={option.StationId}
                     value={option.StationName}
+                    data-key={option.StationId}
                   >
                     {option.StationName}
                   </option>
@@ -210,8 +281,11 @@ const InspectionReportDetails = props => {
               <TextField
                 id="date"
                 label="Inspection Date"
+                error={hasError('inspectionDate')}
                 type="date"
-                defaultValue={now}
+                name="inspectionDate"
+                onChange={handleDate}
+                value={formState.values.inspectionDate}
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,
@@ -223,22 +297,17 @@ const InspectionReportDetails = props => {
               md={12}
               xs={12}
             >
-              <Dropzone onDrop={acceptedFiles => handleFile(acceptedFiles)}>
-                {({getRootProps, getInputProps}) => (
-                  <section>
-                    <Paper variant="outlined" {...getRootProps()} className={classes.paper}>
-                      <input {...getInputProps()} />
-                      <Typography variant="h6" className={classes.textUnderLine}>Drag 'n' drop some files here, or click to select report files</Typography>
-                    </Paper>
-                  </section>
-                )}
-              </Dropzone>
+              <input type="file" name="file" onChange={handleFile}/>
             </Grid>
           </Grid>
           <Typography
             className = { classes.errorColor}
           >
             { formState.errorText }
+          </Typography>
+          <Typography
+          >
+            { formState.successText }
           </Typography>
         </CardContent>
         <CardActions>
