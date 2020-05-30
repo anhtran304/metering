@@ -4,10 +4,6 @@
   "version": "1.0.0",
   "description": "Mondo Network",
   "license": "MIT",
-  "engines": {
-    "node": "12.4.x",
-    "npm": "6.9.x"
-  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -88,5 +84,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": "12.4.x",
+    "npm": "6.9.x"
   }
 }
