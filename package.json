@@ -5,8 +5,8 @@
   "description": "Mondo Network",
   "license": "MIT",
   "engines": {
-    "node": "12.4.0",
-    "npm": "6.9.0"
+    "node": "12.4.x",
+    "npm": "6.9.x"
   },
   "scripts": {
     "prebuild": "rimraf dist",
