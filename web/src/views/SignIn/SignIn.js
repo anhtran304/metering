@@ -134,7 +134,7 @@ const SignIn = props => {
     const logOut = async () => {
       await axios({
         method: 'get',
-        url: '/auth/logout',
+        url: '/api/auth/logout',
       });
     };
     logOut();
@@ -189,9 +189,9 @@ const SignIn = props => {
   const handleSignIn = event => {
     event.preventDefault();
     const response = axios({
-      method: 'post',    
-      url: '/auth/login',
-      // headers: {'Authorization': 'Bearer' + token}, 
+      method: 'post',
+      url: '/api/auth/login',
+      // headers: {'Authorization': 'Bearer' + token},
       data: {
         username: formState.values.email,
         password: formState.values.password

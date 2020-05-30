@@ -51,7 +51,7 @@ const StationDetailsComponent = props => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: window.location.pathname,
+        url: `/api${window.location.pathname}`,
       });
       setData(result.data);
     };

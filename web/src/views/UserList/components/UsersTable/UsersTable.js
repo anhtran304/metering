@@ -55,7 +55,7 @@ const UsersTable = props => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/users',
+        url: '/api/users',
       });
       setData(result.data);
     };

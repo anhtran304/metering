@@ -75,7 +75,7 @@ const InspectionReportDetails = props => {
     const fetchStationData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/public/allstationnames',
+        url: '/api/public/allstationnames',
       });
       setFormState(formState => ({
         ...formState,
@@ -173,7 +173,7 @@ const InspectionReportDetails = props => {
               'content-type': 'multipart/form-data'
           }
         }
-        const url = '/stations/inspectionreport';
+        const url = '/api/stations/inspectionreport';
 
         form.append('stationId', formState.values.stationId);
         form.append('reportNumber', formState.values.reportNumber);

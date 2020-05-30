@@ -51,7 +51,7 @@ const LogicalMeterNMIDetailsComponent = props => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: window.location.pathname,
+        url: `/api${window.location.pathname}`,
       });
       // console.log(result.data);
       setData(result.data);

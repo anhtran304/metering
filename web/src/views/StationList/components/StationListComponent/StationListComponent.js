@@ -52,7 +52,7 @@ const StationListComponent = props => {
     const fetchData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/stations',
+        url: 'api/stations',
       });
       setData(result.data);
     };

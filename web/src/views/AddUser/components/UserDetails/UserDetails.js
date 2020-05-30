@@ -131,7 +131,7 @@ const UserDetails = props => {
     const fetchRoleData = async () => {
       const result = await axios({
         method: 'get',
-        url: '/roles',
+        url: '/api/roles',
       });
       setFormState(formState => ({
         ...formState,
