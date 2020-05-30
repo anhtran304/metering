@@ -64,7 +64,7 @@ const TotalUsers = props => {
             >
               TOTAL USERS
             </Typography>
-            <Typography variant="h3">1,600</Typography>
+            <Typography variant="h3">10</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -78,7 +78,7 @@ const TotalUsers = props => {
             className={classes.differenceValue}
             variant="body2"
           >
-            16%
+            10%
           </Typography>
           <Typography
             className={classes.caption}

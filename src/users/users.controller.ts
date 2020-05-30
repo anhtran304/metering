@@ -24,16 +24,22 @@ export class UsersController {
   @Get('/')
   @Operations('GET_ALL_USERS')
   getAllUser(@Res() res: Response) {
-    this.usersService.findAllUsers().then((data) => {
-      res.json({ users: data });
-    });
+    this.usersService
+      .findAllUsers()
+      .then((data) => {
+        res.json({ users: data });
+      })
+      .catch((error) => res.json({ users: [], message: error }));
   }
 
   @Post('/')
   @Operations('ADD_NEW_USER')
   addUser(@Body() body, @Res() res: Response) {
-    this.usersService.addOneUser(body).then((data) => {
-      res.json({ users: data });
-    });
+    this.usersService
+      .addOneUser(body)
+      .then((data) => {
+        res.json({ users: data });
+      })
+      .catch((error) => res.json({ users: [], message: error }));
   }
 }

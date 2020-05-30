@@ -9,7 +9,8 @@ import sql = require('mssql');
 import { Body } from '@nestjs/common';
 import bcrypt = require('bcrypt');
 import { SALT_ROUNDS } from '../env'
-
+import { async } from 'rxjs/internal/scheduler/async';
+var validator = require('validator');
 export interface IUser {
   // UserId: number;
   FirstName: string;
@@ -70,63 +71,72 @@ export class UsersService {
 
   // Add one user
   async addOneUser(@Body() body): Promise<any> {
-    let isExist: IUser;
-    let hashedPassword: string = '';
     const requestDB = pool.request(); // create request from pool
     // Query user from database with email address
-    const user = await requestDB
-      .input('iEmail', sql.NVarChar(50), body.values.email)
-      .input('iIsAtive', sql.Bit, 1)
-      .query(
-        'select * from Users where Email = @iEmail and isActive = @iIsAtive'
-      );
-
-
-    if (user && user.recordset.length > 0) {
-      throw new ConflictException();
+    let hashedPassword:string = '';
+    if (!body.values) {
+      throw new BadRequestException();
     } else {
-      console.log('4');
-      console.log(body.values.password);
-      console.log(SALT_ROUNDS);
-      hashedPassword = bcrypt.hashSync(body.values.password, SALT_ROUNDS);
-      console.log(hashedPassword);
+      const isEmail = validator.isEmail(body.values.email);
+      let isPassword: boolean = false;
+      let roles: string[] = [];
+      if (body.values.password && body.values.confirmPassword) {
+        body.values.password === body.values.confirmPassword
+          ? (isPassword = true)
+          : (isPassword = false);
+      }
+      if (body.roles) {
+        const rolesData = Object.entries(body.roles);
+        for (const [roleName, isTrue] of rolesData) {
+          if (isTrue) roles.push(roleName);
+        }
+      }
+      const user = await requestDB
+        .input('iEmail', sql.NVarChar(50), body.values.email)
+        .input('iIsAtive', sql.Bit, 1)
+        .query(
+          'select * from Users where Email = @iEmail and isActive = @iIsAtive'
+        );
+      if (user && user.recordset.length > 0) {
+        throw new ConflictException(); // email is exist in the system
+      } else {
+        const salt = bcrypt.genSaltSync(Number(SALT_ROUNDS));
+        hashedPassword = bcrypt.hashSync(body.values.password, salt);
+        if (isEmail && isPassword && roles.length > 0 && hashedPassword) {
+          this.users = [];
+          const requestDB = pool.request(); // create request from pool
+          // Query all user from database
+          const dataUser = await pool
+            .request()
+            .input('FirstName', sql.NVarChar(50), body.values.firstName)
+            .input('LastName', sql.NVarChar(50), body.values.lastName)
+            .input('Email', sql.NVarChar(50), body.values.email)
+            .input('Password', sql.NVarChar(100), hashedPassword)
+            .input('isActive', sql.Bit, body.values.isActive)
+            .execute('p_InsertOneUser');
+          let dataRole;
+          if (!dataUser.recordset) {
+            throw new BadRequestException();
+          } else {
+            const promises = roles.map((roleName) => {
+              return new Promise((resolve, reject) => {
+                pool
+                  .request()
+                  .input('Email', sql.NVarChar(50), body.values.email)
+                  .input('RoleName', sql.NVarChar(50), roleName)
+                  .execute('p_InsertRoleForUser');
+              });
+            });
+            await Promise.all(promises).then(function(values) {
+              dataRole = values;
+            });
+            this.users = dataUser.recordset;
+            return this.users;
+          }
+        }
+      }
     }
 
-    // let hashedPassword: string = '';
-    // if (isExist) {
-    //   throw new ConflictException();
-    // } else {
-    //   try {
-    //     hashedPassword = await bcrypt.hash(body.values.password, SALT_ROUNDS, function(
-    //       err,
-    //       hashedPassword
-    //     ) {
-    //       return hashedPassword;
-    //     });
-    //   } catch (error) {
-    //      throw new InternalServerErrorException();
-    //   }
-    // }
-
-    
-// {
-//   values: {
-//     firstName: 'a',
-//     lastName: 'a',
-//     email: 'a@gmail.com',
-//     password: 'a',
-//     isActive: 1,
-//     confirmPassword: 'a'
-//   },
-//   roles: {
-//     Admin: false,
-//     'Group Manager': false,
-//     Reporter: false,
-//     'Data Manager': false,
-//     Viewer: true
-//   }
-// }
-    
   }
 
   // Find operation assigned to user

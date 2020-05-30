@@ -26,7 +26,7 @@ const Footer = props => {
         .2020
       </Typography>
       <Typography variant="caption">
-        Created with love for the environment. By designers and developers from Devias IO
+        With love for the environment. By developers from Project team.
       </Typography>
     </div>
   );

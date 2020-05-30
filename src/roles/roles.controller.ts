@@ -22,11 +22,17 @@ export class RolesController {
   @Get('/')
   @Operations('GET_ALL_ROLES')
   getAll(@Res() res: Response) {
-    this.rolesService.findAllRoles().then((data) => {
-      const allRoles = data.map(d=> d.RoleName);
-      const returnData = allRoles.reduce((ac, a) => ({ ...ac, [a]: false }), {});
-      // console.log(obj);
-      res.json({ roles: returnData });
-    });
+    this.rolesService
+      .findAllRoles()
+      .then((data) => {
+        const allRoles = data.map((d) => d.RoleName);
+        const returnData = allRoles.reduce(
+          (ac, a) => ({ ...ac, [a]: false }),
+          {}
+        );
+        // console.log(obj);
+        res.json({ roles: returnData });
+      })
+      .catch((error) => res.json({ roles: null, message: error }));
   }
 }

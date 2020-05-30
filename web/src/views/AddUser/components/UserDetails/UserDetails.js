@@ -184,24 +184,16 @@ const UserDetails = props => {
         errorText: errorMessage
       }));
     } else {
-      const response = axios({
+      axios({
         method: 'post',
-        url: '/users',
-        // headers: {'Authorization': 'Bearer' + token}, 
+        url: '/api/users',
+        // headers: {'Authorization': 'Bearer' + token},
         data: {
           values: formState.values,
           roles: formState.rolesData,
         }
       })
-      .catch(function () {
-        setFormState(formState => ({
-          ...formState,
-          errorText: "Sorry, could not make request to server. Please try again later."
-        }));
-      });
-
-      response.then(res => {
-        console.log(res);
+      .then(res => {
         let errorDisplayText = '';
         if (errorDisplayText && errorDisplayText.length > 0) {
           setFormState(formState => ({
@@ -212,6 +204,12 @@ const UserDetails = props => {
         setFormState(formState => ({
           ...formState,
           errorText: "Save user success"
+        }));
+      })
+      .catch(function () {
+        setFormState(formState => ({
+          ...formState,
+          errorText: "Sorry, could not make request to server. Please try again later."
         }));
       });
     } 

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+// import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import MoneyIcon from '@material-ui/icons/Money';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,10 +41,30 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const Budget = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+
+  const [formState, setFormState] = useState({
+    stations: null
+  });
+
+
+  useEffect(() => {
+    const fetchStationData = async () => {
+      const result = await axios({
+        method: 'get',
+        url: '/api/public/allstationnames',
+      });
+      setFormState(formState => ({
+        ...formState,
+        stations: result.data.stations.length,
+      }));
+    };
+    fetchStationData();
+  }, []);
 
   return (
     <Card
@@ -62,9 +83,9 @@ const Budget = props => {
               gutterBottom
               variant="body2"
             >
-              BUDGET
+              TOTAL STATIONS
             </Typography>
-            <Typography variant="h3">$24,000</Typography>
+            <Typography variant="h3">{formState.stations}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -72,7 +93,7 @@ const Budget = props => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
+        {/* <div className={classes.difference}>
           <ArrowDownwardIcon className={classes.differenceIcon} />
           <Typography
             className={classes.differenceValue}
@@ -86,7 +107,7 @@ const Budget = props => {
           >
             Since last month
           </Typography>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

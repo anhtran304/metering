@@ -7,10 +7,10 @@ import {
   TotalUsers,
   TasksProgress,
   TotalProfit,
-  LatestSales,
-  UsersByDevice,
-  LatestProducts,
-  LatestOrders
+  // LatestSales,
+  // UsersByDevice,
+  // LatestProducts,
+  // LatestOrders
 } from './components';
 
 const useStyles = makeStyles(theme => ({
@@ -64,7 +64,7 @@ const Dashboard = () => {
         >
           <TotalProfit />
         </Grid>
-        <Grid
+        {/* <Grid
           item
           lg={8}
           md={12}
@@ -81,8 +81,8 @@ const Dashboard = () => {
           xs={12}
         >
           <UsersByDevice />
-        </Grid>
-        <Grid
+        </Grid> */}
+        {/* <Grid
           item
           lg={4}
           md={6}
@@ -99,7 +99,7 @@ const Dashboard = () => {
           xs={12}
         >
           <LatestOrders />
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

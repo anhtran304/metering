@@ -21,8 +21,7 @@ import { StationExceptionFilter } from '../common/filters/station-exceptions.fil
 import { Operations } from 'src/common/decorators/operations.decorator';
 import { StationsService } from './stations.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Date } from 'mssql';
-
+import { extname } from 'path';
 
 @UseGuards(OperationsGuard)
 @Controller('/api/stations')
@@ -33,20 +32,29 @@ export class StationsController {
   @Operations('GET_ALL_STATIONS')
   getAll(@Res() res: Response) {
     // console.log(this.stationsService.findAllStations());
-    this.stationsService.findAllStations().then((data) => {
-      res.json({ stations: data });
-    });
+    this.stationsService
+      .findAllStations()
+      .then((data) => {
+        res.json({ stations: data });
+      })
+      .catch((error) => res.json({ stations: null, message: error }));
   }
 
   @Get('/:stationId')
   @Operations('GET_ONE_STATIONDETAILS')
   getOneStationDetails(@Res() res: Response, @Param() params) {
     if (params.stationId) {
-      this.stationsService.getOneStationDetails(params).then((data) => {
-        res.json({ stationDetails: data });
-      });
+      this.stationsService
+        .getOneStationDetails(params)
+        .then((data) => {
+          res.json({ stationDetails: data });
+        })
+        .catch((error) => res.json({ stationDetails: null, message: error }));
     } else {
-      throw new BadRequestException();
+      res.json({
+        stationDetails: null,
+        message: 'Request data is not correct',
+      });
     }
   }
 
@@ -54,11 +62,17 @@ export class StationsController {
   @Operations('GET_ALL_LOGICAL_METER_NMIS_UNDER_STATION')
   getOneLogicalMeterNMDetails(@Res() res: Response, @Param() params) {
     if (params.stationId && params.meterNMI) {
-      this.stationsService.getOneMeterNMIDetails(params).then((data) => {
-        res.json({ meterNMIDetails: data });
-      });
+      this.stationsService
+        .getOneMeterNMIDetails(params)
+        .then((data) => {
+          res.json({ meterNMIDetails: data });
+        })
+        .catch((error) => res.json({ meterNMIDetails: null, message: error }));
     } else {
-      throw new BadRequestException();
+       res.json({
+         meterNMIDetails: null,
+         message: 'Request data is not correct',
+       });
     }
   }
 
@@ -72,7 +86,7 @@ export class StationsController {
             .fill(null)
             .map(() => Math.round(Math.random() * 16).toString(16))
             .join('');
-          return cb(null, `$${randomName}`);
+          return cb(null, `${randomName}${extname(selectedFile.originalname)}`);
         },
       }),
     })
@@ -97,9 +111,10 @@ export class StationsController {
           } else {
             res.json({ data: data });
           }
-        });
+        })
+        .catch((error) => res.json({ data: null, message: error }));
     } else {
-      throw new BadRequestException();
+      res.json({ data: null, message: 'Post data is not correct' });
     }
   }
 }

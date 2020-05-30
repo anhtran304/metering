@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
+    backgroundImage: 'linear-gradient(to right bottom, rgba(37, 116, 169, 0.8), rgba(65, 62, 154, 0.8)), url(/images/signin.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
@@ -200,7 +200,7 @@ const SignIn = props => {
     .catch(function () {
       setFormState(formState => ({
         ...formState,
-        errorText: "Sorry, could not make request to server. Please try again later." 
+        errorText: "Sorry, could not make request to server. Please try again later."
       }));
     });
 
@@ -209,7 +209,7 @@ const SignIn = props => {
       if (res && res.status) {
         if (res.status === 201 && res.data) {
           switch (res.data.status) {
-            case 200:              
+            case 200:
               errorDisplayText = '';
               break;
             default:

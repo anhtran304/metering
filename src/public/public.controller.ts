@@ -11,7 +11,7 @@ import {
 import { Response } from 'express';
 
 import { PublicExceptionFilter } from '../common/filters/public-exceptions.filter';
-import { Operations } from 'src/common/decorators/operations.decorator';
+// import { Operations } from 'src/common/decorators/operations.decorator';
 import { StationsService } from '../stations/stations.service';
 
 
@@ -22,9 +22,12 @@ export class PublicController {
   @Get('/allstationnames')
   getAll(@Res() res: Response) {
     // console.log(this.stationsService.findAllStations());
-    this.stationsService.findAllStations().then((data) => {
-      res.json({ stations: data });
-    });
+    this.stationsService
+      .findAllStations()
+      .then((data) => {
+        res.json({ stations: data });
+      })
+      .catch((error) => res.json({ stations: null, message: error }));
   }
 
 }
