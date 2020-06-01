@@ -127,7 +127,7 @@ const StationListComponent = props => {
         </PerfectScrollbar>
       </CardContent>
       <Divider />
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <Button
           color="primary"
           size="small"
@@ -135,7 +135,7 @@ const StationListComponent = props => {
         >
           View all <ArrowRightIcon />
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

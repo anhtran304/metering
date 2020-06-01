@@ -47,7 +47,7 @@ const Topbar = props => {
         <RouterLink to="/">
         < Typography variant = "h4"
         style = { logoColor }>
-          Mondo Energy
+          AusNet Services / Mondo
         </Typography>
         </RouterLink>
         <div className={classes.flexGrow} />

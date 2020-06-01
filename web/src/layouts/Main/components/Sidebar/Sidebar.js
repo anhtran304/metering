@@ -74,7 +74,7 @@ const Sidebar = props => {
       icon: <LibraryBooksIcon />
     },
     {
-      title: 'Authentication',
+      title: 'Sign Out',
       href: '/sign-in',
       isPublic: true,
       icon: <LockOpenIcon />

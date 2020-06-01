@@ -21,12 +21,11 @@ const Footer = props => {
       className={clsx(classes.root, className)}
     >
       <Typography variant="body1">
-        &copy;{' '}
-          Mondo Energy
-        .2020
+        {/* &copy;{' '} */}
+        Energy Metering Group 2020
       </Typography>
       <Typography variant="caption">
-        With love for the environment. By developers from Project team.
+        Created by Swinburne University - Project Team 15
       </Typography>
     </div>
   );

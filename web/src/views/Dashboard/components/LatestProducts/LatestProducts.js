@@ -82,7 +82,7 @@ const LatestProducts = props => {
         </List>
       </CardContent>
       <Divider />
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <Button
           color="primary"
           size="small"
@@ -90,7 +90,7 @@ const LatestProducts = props => {
         >
           View all <ArrowRightIcon />
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

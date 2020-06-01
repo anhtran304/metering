@@ -273,14 +273,14 @@ const SignIn = props => {
                 className={classes.quoteText}
                 variant="h1"
               >
-                Metering Department
+                Energy Metering Group
               </Typography>
               <div className={classes.person}>
                 <Typography
                   className={classes.name}
                   variant="body1"
                 >
-                  Ausnet Group
+                  AusNet Services / Mondo
                 </Typography>
               </div>
             </div>
@@ -360,7 +360,7 @@ const SignIn = props => {
                 >
                   Sign in now
                 </Button>
-                <Typography
+                {/* <Typography
                   color="textSecondary"
                   variant="body1"
                 >
@@ -372,7 +372,7 @@ const SignIn = props => {
                   >
                     Sign up
                   </Link>
-                </Typography>
+                </Typography> */}
               </form>
             </div>
           </div>

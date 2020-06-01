@@ -144,7 +144,7 @@ const LogicalMeterNMIDetailsComponent = props => {
         </PerfectScrollbar>
       </CardContent>
       <Divider />
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <Button
           color="primary"
           size="small"
@@ -152,7 +152,7 @@ const LogicalMeterNMIDetailsComponent = props => {
         >
           View all <ArrowRightIcon />
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };
