@@ -34,7 +34,7 @@ const Topbar = props => {
       <Toolbar>
         <RouterLink to="/">
           <Typography variant = "h4" style = { logoColor }>
-            Mondo Energy
+            AusNet Services / Mondo
           </Typography>
         </RouterLink>
       </Toolbar>
